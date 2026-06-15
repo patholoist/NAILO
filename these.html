@@ -87,12 +87,9 @@
             flex-shrink: 0;
             transition: background 0.3s;
         }
-        .status-dot.ok  { background: #10b981; }
-        .status-dot.err { background: #ef4444; }
-        .status-dot.loading {
-            background: #f59e0b;
-            animation: pulse 1s infinite;
-        }
+        .status-dot.ok      { background: #10b981; }
+        .status-dot.err     { background: #ef4444; }
+        .status-dot.loading { background: #f59e0b; animation: pulse 1s infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
         .user-selector {
@@ -391,13 +388,13 @@
     </div>
 
     <div class="footer">— Thèse ALO —</div>
-
 </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+<!-- Firebase SDK compat (fonctionne sur tous les navigateurs sans import/module) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
+<script>
     // ── Config Firebase ──
     const firebaseConfig = {
         apiKey: "AIzaSyCstvwtJb_P51KDiYQYi3Y4QCgB0irCw7A",
@@ -406,13 +403,12 @@
         projectId: "these-alo",
         storageBucket: "these-alo.firebasestorage.app",
         messagingSenderId: "230018059189",
-        appId: "1:230018059189:web:ef6a4a3a27fed0e03aa7fc",
-        measurementId: "G-7NC3SSFP8E"
+        appId: "1:230018059189:web:ef6a4a3a27fed0e03aa7fc"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db  = getDatabase(app);
-    const dataRef = ref(db, 'availabilities');
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const dataRef = db.ref('availabilities');
 
     // ── Config calendrier ──
     const users = {
@@ -431,7 +427,7 @@
     // ── Statut ──
     function setStatus(state, msg) {
         const dot = document.getElementById('statusDot');
-        dot.className = 'status-dot' + (state === 'ok' ? ' ok' : state === 'err' ? ' err' : ' loading');
+        dot.className = 'status-dot ' + state;
         document.getElementById('statusText').textContent = msg;
     }
 
@@ -453,24 +449,24 @@
             if (dow === 6 || dow === 7) dayEl.classList.add('day-weekend');
             dayEl.dataset.day = day;
 
-            const bg  = document.createElement('div'); bg.className = 'day-bg';
-            const num = document.createElement('div'); num.className = 'day-number'; num.textContent = day;
+            const bg   = document.createElement('div'); bg.className = 'day-bg';
+            const num  = document.createElement('div'); num.className = 'day-number'; num.textContent = day;
             const dots = document.createElement('div'); dots.className = 'day-users';
 
             dayEl.appendChild(bg); dayEl.appendChild(num); dayEl.appendChild(dots);
-            dayEl.addEventListener('click', () => toggleDay(day));
+            dayEl.addEventListener('click', function() { toggleDay(day); });
             grid.appendChild(dayEl);
         }
     }
 
     // ── Sélection utilisateur ──
-    document.querySelectorAll('.user-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.user-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.user-btn').forEach(function(b) { b.classList.remove('active'); });
             btn.classList.add('active');
             currentUser = btn.dataset.user;
-            const instr = document.getElementById('instruction');
-            instr.textContent = `✅ ${users[currentUser].name} sélectionné(e) — Cliquez sur vos jours disponibles`;
+            var instr = document.getElementById('instruction');
+            instr.textContent = '✅ ' + users[currentUser].name + ' sélectionné(e) — Cliquez sur vos jours disponibles';
             instr.style.background = users[currentUser].color + '20';
             instr.style.color = users[currentUser].color;
         });
@@ -479,9 +475,9 @@
     // ── Toggle jour ──
     function toggleDay(day) {
         if (!currentUser) { alert('⚠️ Veuillez d\'abord sélectionner votre profil !'); return; }
-        const key = `day_${day}`;
+        var key = 'day_' + day;
         if (!availabilities[key]) availabilities[key] = [];
-        const idx = availabilities[key].indexOf(currentUser);
+        var idx = availabilities[key].indexOf(currentUser);
         if (idx > -1) {
             availabilities[key].splice(idx, 1);
             if (availabilities[key].length === 0) delete availabilities[key];
@@ -493,17 +489,16 @@
 
     // ── Rendu ──
     function renderAll() {
-        // Calendrier
-        document.querySelectorAll('.day:not(.empty)').forEach(dayEl => {
-            const key = `day_${dayEl.dataset.day}`;
-            const list = availabilities[key] || [];
-            const dots = dayEl.querySelector('.day-users');
-            const bg   = dayEl.querySelector('.day-bg');
+        document.querySelectorAll('.day:not(.empty)').forEach(function(dayEl) {
+            var key  = 'day_' + dayEl.dataset.day;
+            var list = availabilities[key] || [];
+            var dots = dayEl.querySelector('.day-users');
+            var bg   = dayEl.querySelector('.day-bg');
 
             dots.innerHTML = '';
-            list.forEach(u => {
-                const dot = document.createElement('div');
-                dot.className = `user-dot ${u}`;
+            list.forEach(function(u) {
+                var dot = document.createElement('div');
+                dot.className = 'user-dot ' + u;
                 dots.appendChild(dot);
             });
 
@@ -515,43 +510,39 @@
                 bg.style.opacity = '0.2';
                 dayEl.classList.remove('all-available');
             } else {
-                bg.style.background = `linear-gradient(135deg, ${list.map(u => users[u].color).join(', ')})`;
+                bg.style.background = 'linear-gradient(135deg, ' + list.map(function(u){ return users[u].color; }).join(', ') + ')';
                 bg.style.opacity = '0.25';
                 dayEl.classList.toggle('all-available', list.length === 4);
             }
         });
 
-        // Récapitulatif
-        Object.keys(users).forEach(u => {
-            let count = 0;
-            Object.values(availabilities).forEach(list => { if (list.includes(u)) count++; });
-            document.getElementById(`count-${u}`).textContent = count;
+        Object.keys(users).forEach(function(u) {
+            var count = 0;
+            Object.values(availabilities).forEach(function(list) { if (list.includes(u)) count++; });
+            document.getElementById('count-' + u).textContent = count;
         });
 
-        // Concordance
-        const fullEl = document.getElementById('concordanceFull');
-        const fullDays = Object.keys(availabilities)
-            .filter(k => availabilities[k].length === 4)
-            .map(k => parseInt(k.replace('day_', '')))
-            .sort((a, b) => a - b);
+        var fullEl   = document.getElementById('concordanceFull');
+        var fullDays = Object.keys(availabilities)
+            .filter(function(k) { return availabilities[k].length === 4; })
+            .map(function(k) { return parseInt(k.replace('day_', '')); })
+            .sort(function(a, b) { return a - b; });
 
         if (fullDays.length === 0) {
             fullEl.innerHTML = '<div class="concordance-empty">Aucune date avec les 4 personnes disponibles pour le moment</div>';
         } else {
-            fullEl.innerHTML = fullDays.map(d => `
-                <div class="concordance-day">
-                    <div class="concordance-day-number">${d}</div>
-                    <div class="concordance-day-label">${getDayName(d)}</div>
-                </div>`).join('');
+            fullEl.innerHTML = fullDays.map(function(d) {
+                return '<div class="concordance-day"><div class="concordance-day-number">' + d + '</div><div class="concordance-day-label">' + getDayName(d) + '</div></div>';
+            }).join('');
         }
     }
 
     // ── Reset ──
-    document.getElementById('resetBtn').addEventListener('click', () => {
+    document.getElementById('resetBtn').addEventListener('click', function() {
         if (!currentUser) { alert('⚠️ Veuillez d\'abord sélectionner votre profil !'); return; }
-        if (!confirm(`Réinitialiser toutes les disponibilités de ${users[currentUser].name} ?`)) return;
-        Object.keys(availabilities).forEach(key => {
-            const idx = availabilities[key].indexOf(currentUser);
+        if (!confirm('Réinitialiser toutes les disponibilités de ' + users[currentUser].name + ' ?')) return;
+        Object.keys(availabilities).forEach(function(key) {
+            var idx = availabilities[key].indexOf(currentUser);
             if (idx > -1) {
                 availabilities[key].splice(idx, 1);
                 if (availabilities[key].length === 0) delete availabilities[key];
@@ -563,17 +554,17 @@
     // ── Firebase : écriture ──
     function saveData() {
         setStatus('loading', 'Sauvegarde en cours…');
-        set(dataRef, availabilities)
-            .then(() => setStatus('ok', 'Disponibilités sauvegardées et partagées ✓'))
-            .catch(e => setStatus('err', 'Erreur : ' + e.message));
+        dataRef.set(availabilities)
+            .then(function() { setStatus('ok', 'Disponibilités sauvegardées et partagées ✓'); })
+            .catch(function(e) { setStatus('err', 'Erreur : ' + e.message); });
     }
 
-    // ── Firebase : lecture en temps réel ──
-    onValue(dataRef, (snapshot) => {
+    // ── Firebase : lecture temps réel ──
+    dataRef.on('value', function(snapshot) {
         availabilities = snapshot.val() || {};
         renderAll();
         setStatus('ok', 'Calendrier synchronisé en temps réel ✓');
-    }, (error) => {
+    }, function(error) {
         setStatus('err', 'Erreur de connexion : ' + error.message);
     });
 
