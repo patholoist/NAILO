@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thèse ALO - Calendrier des disponibilités</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
@@ -20,41 +16,27 @@
             color: #2d3748;
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
+        .container { max-width: 1100px; margin: 0 auto; }
 
         .chu-logo-wrapper {
             background: white;
             padding: 20px 40px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             margin-bottom: 16px;
             text-align: center;
         }
-
-        .chu-logo {
-            max-height: 60px;
-            width: auto;
-        }
+        .chu-logo { max-height: 60px; width: auto; }
 
         .image-header {
             border-radius: 16px;
             overflow: hidden;
             margin-bottom: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             height: 180px;
             position: relative;
         }
-
-        .image-header img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
+        .image-header img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .image-header::after {
             content: '';
             position: absolute;
@@ -67,26 +49,12 @@
             background: white;
             padding: 32px 40px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             margin-bottom: 24px;
             text-align: center;
         }
-
-        .header h1 {
-            font-size: 36px;
-            font-weight: 700;
-            color: #1a202c;
-            margin-bottom: 8px;
-            letter-spacing: -1px;
-        }
-
-        .header .subtitle {
-            font-size: 16px;
-            color: #718096;
-            font-weight: 500;
-            margin-bottom: 16px;
-        }
-
+        .header h1 { font-size: 36px; font-weight: 700; color: #1a202c; margin-bottom: 8px; letter-spacing: -1px; }
+        .header .subtitle { font-size: 16px; color: #718096; font-weight: 500; margin-bottom: 16px; }
         .header .topic {
             display: inline-block;
             padding: 12px 24px;
@@ -100,7 +68,6 @@
             text-align: center;
         }
 
-        /* STATUS BAR */
         .status-bar {
             display: flex;
             align-items: center;
@@ -120,17 +87,21 @@
             flex-shrink: 0;
             transition: background 0.3s;
         }
-        .status-dot.ok { background: #10b981; }
+        .status-dot.ok  { background: #10b981; }
         .status-dot.err { background: #ef4444; }
+        .status-dot.loading {
+            background: #f59e0b;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
         .user-selector {
             background: white;
             padding: 24px 32px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             margin-bottom: 24px;
         }
-
         .user-selector h2 {
             font-size: 14px;
             text-transform: uppercase;
@@ -139,12 +110,7 @@
             margin-bottom: 16px;
             font-weight: 600;
         }
-
-        .users-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
+        .users-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 
         .user-btn {
             padding: 16px 20px;
@@ -161,37 +127,26 @@
             align-items: center;
             gap: 10px;
         }
+        .user-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .user-color { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
 
-        .user-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .user-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .user-btn[data-user="leroy"] .user-color { background: #ef4444; }
-        .user-btn[data-user="gibier"] .user-color { background: #3b82f6; }
-        .user-btn[data-user="gnemmi"] .user-color { background: #10b981; }
+        .user-btn[data-user="leroy"]    .user-color { background: #ef4444; }
+        .user-btn[data-user="gibier"]   .user-color { background: #3b82f6; }
+        .user-btn[data-user="gnemmi"]   .user-color { background: #10b981; }
         .user-btn[data-user="maanaoui"] .user-color { background: #f59e0b; }
 
-        .user-btn[data-user="leroy"].active { background: #fef2f2; color: #ef4444; border-color: #ef4444; }
-        .user-btn[data-user="gibier"].active { background: #eff6ff; color: #3b82f6; border-color: #3b82f6; }
-        .user-btn[data-user="gnemmi"].active { background: #ecfdf5; color: #10b981; border-color: #10b981; }
+        .user-btn[data-user="leroy"].active    { background: #fef2f2; color: #ef4444; border-color: #ef4444; }
+        .user-btn[data-user="gibier"].active   { background: #eff6ff; color: #3b82f6; border-color: #3b82f6; }
+        .user-btn[data-user="gnemmi"].active   { background: #ecfdf5; color: #10b981; border-color: #10b981; }
         .user-btn[data-user="maanaoui"].active { background: #fffbeb; color: #f59e0b; border-color: #f59e0b; }
 
         .calendar {
             background: white;
             padding: 32px 40px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             margin-bottom: 24px;
         }
-
         .calendar-header {
             display: flex;
             justify-content: space-between;
@@ -200,28 +155,10 @@
             flex-wrap: wrap;
             gap: 12px;
         }
+        .calendar-title { font-size: 24px; font-weight: 700; color: #1a202c; }
+        .calendar-info { font-size: 13px; color: #718096; background: #f7fafc; padding: 8px 14px; border-radius: 8px; }
 
-        .calendar-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1a202c;
-        }
-
-        .calendar-info {
-            font-size: 13px;
-            color: #718096;
-            background: #f7fafc;
-            padding: 8px 14px;
-            border-radius: 8px;
-        }
-
-        .weekdays {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
+        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 8px; }
         .weekday {
             text-align: center;
             font-size: 12px;
@@ -232,11 +169,7 @@
             padding: 8px 0;
         }
 
-        .days-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-        }
+        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
 
         .day {
             aspect-ratio: 1;
@@ -252,42 +185,18 @@
             border: 2px solid transparent;
             overflow: hidden;
         }
-
-        .day.empty {
-            background: transparent;
-            cursor: default;
-        }
-
-        .day:not(.empty):hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .day.all-available {
-            border-color: #10b981;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
-        }
-
+        .day.empty { background: transparent; cursor: default; }
+        .day:not(.empty):hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .day.all-available { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.2); }
         .day.all-available::before {
             content: '⭐';
             position: absolute;
-            top: 4px;
-            right: 4px;
+            top: 4px; right: 4px;
             font-size: 14px;
             z-index: 3;
         }
-
-        .day-number {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1a202c;
-            z-index: 2;
-        }
-
-        .day-weekend .day-number {
-            color: #cbd5e0;
-        }
-
+        .day-number { font-size: 20px; font-weight: 700; color: #1a202c; z-index: 2; }
+        .day-weekend .day-number { color: #cbd5e0; }
         .day-users {
             display: flex;
             gap: 3px;
@@ -295,35 +204,21 @@
             z-index: 2;
             flex-wrap: wrap;
             justify-content: center;
-            max-width: 100%;
         }
-
-        .user-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .user-dot.leroy { background: #ef4444; }
-        .user-dot.gibier { background: #3b82f6; }
-        .user-dot.gnemmi { background: #10b981; }
+        .user-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .user-dot.leroy    { background: #ef4444; }
+        .user-dot.gibier   { background: #3b82f6; }
+        .user-dot.gnemmi   { background: #10b981; }
         .user-dot.maanaoui { background: #f59e0b; }
-
-        .day-bg {
-            position: absolute;
-            inset: 0;
-            opacity: 0.15;
-            z-index: 1;
-        }
+        .day-bg { position: absolute; inset: 0; opacity: 0.15; z-index: 1; }
 
         .summary {
             background: white;
             padding: 32px 40px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             margin-bottom: 24px;
         }
-
         .summary h2 {
             font-size: 14px;
             text-transform: uppercase;
@@ -332,92 +227,32 @@
             margin-bottom: 20px;
             font-weight: 600;
         }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-        }
-
-        .summary-card {
-            padding: 20px;
-            border-radius: 12px;
-            background: #f7fafc;
-            border-left: 4px solid;
-        }
-
-        .summary-card[data-user="leroy"] { border-color: #ef4444; }
-        .summary-card[data-user="gibier"] { border-color: #3b82f6; }
-        .summary-card[data-user="gnemmi"] { border-color: #10b981; }
+        .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .summary-card { padding: 20px; border-radius: 12px; background: #f7fafc; border-left: 4px solid; }
+        .summary-card[data-user="leroy"]    { border-color: #ef4444; }
+        .summary-card[data-user="gibier"]   { border-color: #3b82f6; }
+        .summary-card[data-user="gnemmi"]   { border-color: #10b981; }
         .summary-card[data-user="maanaoui"] { border-color: #f59e0b; }
-
-        .summary-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1a202c;
-            margin-bottom: 8px;
-        }
-
-        .summary-count {
-            font-size: 32px;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-
-        .summary-card[data-user="leroy"] .summary-count { color: #ef4444; }
-        .summary-card[data-user="gibier"] .summary-count { color: #3b82f6; }
-        .summary-card[data-user="gnemmi"] .summary-count { color: #10b981; }
+        .summary-name { font-size: 14px; font-weight: 600; color: #1a202c; margin-bottom: 8px; }
+        .summary-count { font-size: 32px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+        .summary-card[data-user="leroy"]    .summary-count { color: #ef4444; }
+        .summary-card[data-user="gibier"]   .summary-count { color: #3b82f6; }
+        .summary-card[data-user="gnemmi"]   .summary-count { color: #10b981; }
         .summary-card[data-user="maanaoui"] .summary-count { color: #f59e0b; }
-
-        .summary-label {
-            font-size: 12px;
-            color: #718096;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        .summary-label { font-size: 12px; color: #718096; text-transform: uppercase; letter-spacing: 1px; }
 
         .concordance {
             background: white;
             padding: 32px 40px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             border-left: 6px solid #10b981;
             margin-bottom: 24px;
         }
-
-        .concordance h2 {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1a202c;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .concordance-subtitle {
-            font-size: 14px;
-            color: #718096;
-            margin-bottom: 24px;
-        }
-
-        .concordance-days {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .concordance-empty {
-            padding: 24px;
-            background: #f7fafc;
-            border-radius: 12px;
-            color: #718096;
-            font-style: italic;
-            text-align: center;
-            width: 100%;
-        }
-
+        .concordance h2 { font-size: 18px; font-weight: 700; color: #1a202c; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .concordance-subtitle { font-size: 14px; color: #718096; margin-bottom: 24px; }
+        .concordance-days { display: flex; flex-wrap: wrap; gap: 12px; }
+        .concordance-empty { padding: 24px; background: #f7fafc; border-radius: 12px; color: #718096; font-style: italic; text-align: center; width: 100%; }
         .concordance-day {
             padding: 16px 20px;
             background: linear-gradient(135deg, #10b981, #059669);
@@ -426,26 +261,12 @@
             font-weight: 700;
             text-align: center;
             min-width: 100px;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
             transition: transform 0.2s ease;
         }
-
-        .concordance-day:hover {
-            transform: translateY(-2px);
-        }
-
-        .concordance-day-number {
-            font-size: 28px;
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-
-        .concordance-day-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.9;
-        }
+        .concordance-day:hover { transform: translateY(-2px); }
+        .concordance-day-number { font-size: 28px; line-height: 1; margin-bottom: 4px; }
+        .concordance-day-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; }
 
         .reset-btn {
             margin-top: 20px;
@@ -460,16 +281,13 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-
-        .reset-btn:hover {
-            background: #fecaca;
-        }
+        .reset-btn:hover { background: #fecaca; }
 
         .footer {
             text-align: center;
             margin-top: 40px;
             padding: 24px;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255,255,255,0.7);
             font-size: 14px;
             letter-spacing: 4px;
             text-transform: uppercase;
@@ -491,305 +309,276 @@
     </style>
 </head>
 <body>
+<div class="container">
 
-    <div class="container">
-        
-        <div class="chu-logo-wrapper">
-            <img src="https://chu-lille.fr/wp-content/uploads/2018/12/@2xCHU_Lille_Logo.png" alt="CHU Lille" class="chu-logo">
-        </div>
-        
-        <div class="image-header">
-            <img src="https://raisincdn.akaraisin.com/Org_129/EventLocation_24741/Public/HlTbK131531.jpg" alt="Néphropathie à IgA">
-        </div>
-        
-        <div class="header">
-            <h1>📅 Thèse ALO</h1>
-            <p class="subtitle">Calendrier des disponibilités — Octobre 2026</p>
-            <div class="topic">
-                🔬 Développement d'un algorithme d'intelligence artificielle pour la classification automatique du score MESC de la classification d'Oxford dans la néphropathie à IgA à partir de biopsies rénales numérisées.
-            </div>
-        </div>
-
-        <!-- BARRE DE STATUT -->
-        <div class="status-bar">
-            <div class="status-dot" id="statusDot"></div>
-            <span id="statusText">Connexion au calendrier partagé…</span>
-        </div>
-        
-        <div class="user-selector">
-            <h2>👤 Sélectionnez votre profil</h2>
-            <div class="users-grid">
-                <button class="user-btn" data-user="leroy">
-                    <span class="user-color"></span>
-                    Pr LEROY
-                </button>
-                <button class="user-btn" data-user="gibier">
-                    <span class="user-color"></span>
-                    Dr GIBIER
-                </button>
-                <button class="user-btn" data-user="gnemmi">
-                    <span class="user-color"></span>
-                    Pr GNEMMI
-                </button>
-                <button class="user-btn" data-user="maanaoui">
-                    <span class="user-color"></span>
-                    Dr MAANAOUI
-                </button>
-            </div>
-        </div>
-        
-        <div class="calendar">
-            <div class="calendar-header">
-                <h2 class="calendar-title">Octobre 2026</h2>
-                <span class="calendar-info" id="instruction">👆 Sélectionnez d'abord votre profil ci-dessus</span>
-            </div>
-            
-            <div class="weekdays">
-                <div class="weekday">Lun</div>
-                <div class="weekday">Mar</div>
-                <div class="weekday">Mer</div>
-                <div class="weekday">Jeu</div>
-                <div class="weekday">Ven</div>
-                <div class="weekday">Sam</div>
-                <div class="weekday">Dim</div>
-            </div>
-            
-            <div class="days-grid" id="daysGrid"></div>
-        </div>
-        
-        <div class="summary">
-            <h2>📊 Récapitulatif des disponibilités</h2>
-            <div class="summary-grid">
-                <div class="summary-card" data-user="leroy">
-                    <div class="summary-name">Pr LEROY</div>
-                    <div class="summary-count" id="count-leroy">0</div>
-                    <div class="summary-label">jour(s) disponible(s)</div>
-                </div>
-                <div class="summary-card" data-user="gibier">
-                    <div class="summary-name">Dr GIBIER</div>
-                    <div class="summary-count" id="count-gibier">0</div>
-                    <div class="summary-label">jour(s) disponible(s)</div>
-                </div>
-                <div class="summary-card" data-user="gnemmi">
-                    <div class="summary-name">Pr GNEMMI</div>
-                    <div class="summary-count" id="count-gnemmi">0</div>
-                    <div class="summary-label">jour(s) disponible(s)</div>
-                </div>
-                <div class="summary-card" data-user="maanaoui">
-                    <div class="summary-name">Dr MAANAOUI</div>
-                    <div class="summary-count" id="count-maanaoui">0</div>
-                    <div class="summary-label">jour(s) disponible(s)</div>
-                </div>
-            </div>
-            <button class="reset-btn" id="resetBtn">🔄 Réinitialiser mes disponibilités</button>
-        </div>
-        
-        <div class="concordance">
-            <h2>⭐ Concordance parfaite</h2>
-            <p class="concordance-subtitle">Jours où les <strong>4 personnes</strong> sont disponibles</p>
-            <div class="concordance-days" id="concordanceFull">
-                <div class="concordance-empty">Aucune date avec les 4 personnes disponibles pour le moment</div>
-            </div>
-        </div>
-        
-        <div class="footer">— Thèse ALO —</div>
-        
+    <div class="chu-logo-wrapper">
+        <img src="https://chu-lille.fr/wp-content/uploads/2018/12/@2xCHU_Lille_Logo.png" alt="CHU Lille" class="chu-logo">
     </div>
 
-    <script>
-        const users = {
-            leroy:    { name: 'Pr LEROY',    color: '#ef4444' },
-            gibier:   { name: 'Dr GIBIER',   color: '#3b82f6' },
-            gnemmi:   { name: 'Pr GNEMMI',   color: '#10b981' },
-            maanaoui: { name: 'Dr MAANAOUI', color: '#f59e0b' }
-        };
+    <div class="image-header">
+        <img src="https://raisincdn.akaraisin.com/Org_129/EventLocation_24741/Public/HlTbK131531.jpg" alt="Néphropathie à IgA">
+    </div>
 
-        const dayNames = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
-        const firstDayOfWeek = 4; // 1er octobre 2026 = Jeudi
-        const daysInMonth = 31;
+    <div class="header">
+        <h1>📅 Thèse ALO</h1>
+        <p class="subtitle">Calendrier des disponibilités — Octobre 2026</p>
+        <div class="topic">
+            🔬 Développement d'un algorithme d'intelligence artificielle pour la classification automatique du score MESC de la classification d'Oxford dans la néphropathie à IgA à partir de biopsies rénales numérisées.
+        </div>
+    </div>
 
-        let currentUser = null;
-        let availabilities = {};
+    <div class="status-bar">
+        <div class="status-dot loading" id="statusDot"></div>
+        <span id="statusText">Connexion à la base de données…</span>
+    </div>
 
-        // ── Statut ──
-        function setStatus(state, msg) {
-            const dot = document.getElementById('statusDot');
-            dot.className = 'status-dot' + (state === 'ok' ? ' ok' : state === 'err' ? ' err' : '');
-            document.getElementById('statusText').textContent = msg;
+    <div class="user-selector">
+        <h2>👤 Sélectionnez votre profil</h2>
+        <div class="users-grid">
+            <button class="user-btn" data-user="leroy"><span class="user-color"></span>Pr LEROY</button>
+            <button class="user-btn" data-user="gibier"><span class="user-color"></span>Dr GIBIER</button>
+            <button class="user-btn" data-user="gnemmi"><span class="user-color"></span>Pr GNEMMI</button>
+            <button class="user-btn" data-user="maanaoui"><span class="user-color"></span>Dr MAANAOUI</button>
+        </div>
+    </div>
+
+    <div class="calendar">
+        <div class="calendar-header">
+            <h2 class="calendar-title">Octobre 2026</h2>
+            <span class="calendar-info" id="instruction">👆 Sélectionnez d'abord votre profil ci-dessus</span>
+        </div>
+        <div class="weekdays">
+            <div class="weekday">Lun</div><div class="weekday">Mar</div><div class="weekday">Mer</div>
+            <div class="weekday">Jeu</div><div class="weekday">Ven</div><div class="weekday">Sam</div>
+            <div class="weekday">Dim</div>
+        </div>
+        <div class="days-grid" id="daysGrid"></div>
+    </div>
+
+    <div class="summary">
+        <h2>📊 Récapitulatif des disponibilités</h2>
+        <div class="summary-grid">
+            <div class="summary-card" data-user="leroy">
+                <div class="summary-name">Pr LEROY</div>
+                <div class="summary-count" id="count-leroy">0</div>
+                <div class="summary-label">jour(s) disponible(s)</div>
+            </div>
+            <div class="summary-card" data-user="gibier">
+                <div class="summary-name">Dr GIBIER</div>
+                <div class="summary-count" id="count-gibier">0</div>
+                <div class="summary-label">jour(s) disponible(s)</div>
+            </div>
+            <div class="summary-card" data-user="gnemmi">
+                <div class="summary-name">Pr GNEMMI</div>
+                <div class="summary-count" id="count-gnemmi">0</div>
+                <div class="summary-label">jour(s) disponible(s)</div>
+            </div>
+            <div class="summary-card" data-user="maanaoui">
+                <div class="summary-name">Dr MAANAOUI</div>
+                <div class="summary-count" id="count-maanaoui">0</div>
+                <div class="summary-label">jour(s) disponible(s)</div>
+            </div>
+        </div>
+        <button class="reset-btn" id="resetBtn">🔄 Réinitialiser mes disponibilités</button>
+    </div>
+
+    <div class="concordance">
+        <h2>⭐ Concordance parfaite</h2>
+        <p class="concordance-subtitle">Jours où les <strong>4 personnes</strong> sont disponibles</p>
+        <div class="concordance-days" id="concordanceFull">
+            <div class="concordance-empty">Aucune date avec les 4 personnes disponibles pour le moment</div>
+        </div>
+    </div>
+
+    <div class="footer">— Thèse ALO —</div>
+
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+
+    // ── Config Firebase ──
+    const firebaseConfig = {
+        apiKey: "AIzaSyCstvwtJb_P51KDiYQYi3Y4QCgB0irCw7A",
+        authDomain: "these-alo.firebaseapp.com",
+        databaseURL: "https://these-alo-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "these-alo",
+        storageBucket: "these-alo.firebasestorage.app",
+        messagingSenderId: "230018059189",
+        appId: "1:230018059189:web:ef6a4a3a27fed0e03aa7fc",
+        measurementId: "G-7NC3SSFP8E"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+    const dataRef = ref(db, 'availabilities');
+
+    // ── Config calendrier ──
+    const users = {
+        leroy:    { name: 'Pr LEROY',    color: '#ef4444' },
+        gibier:   { name: 'Dr GIBIER',   color: '#3b82f6' },
+        gnemmi:   { name: 'Pr GNEMMI',   color: '#10b981' },
+        maanaoui: { name: 'Dr MAANAOUI', color: '#f59e0b' }
+    };
+    const dayNames = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+    const firstDayOfWeek = 4; // 1er octobre 2026 = Jeudi
+    const daysInMonth = 31;
+
+    let currentUser = null;
+    let availabilities = {};
+
+    // ── Statut ──
+    function setStatus(state, msg) {
+        const dot = document.getElementById('statusDot');
+        dot.className = 'status-dot' + (state === 'ok' ? ' ok' : state === 'err' ? ' err' : ' loading');
+        document.getElementById('statusText').textContent = msg;
+    }
+
+    // ── Calendrier ──
+    function getDayName(d) {
+        return dayNames[(firstDayOfWeek - 1 + d - 1) % 7];
+    }
+
+    function buildCalendar() {
+        const grid = document.getElementById('daysGrid');
+        grid.innerHTML = '';
+        for (let i = 0; i < firstDayOfWeek - 1; i++) {
+            const e = document.createElement('div'); e.className = 'day empty'; grid.appendChild(e);
         }
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayEl = document.createElement('div');
+            dayEl.className = 'day';
+            const dow = (firstDayOfWeek - 1 + day - 1) % 7 + 1;
+            if (dow === 6 || dow === 7) dayEl.classList.add('day-weekend');
+            dayEl.dataset.day = day;
 
-        // ── Calendrier ──
-        function getDayName(dayNumber) {
-            const dow = (firstDayOfWeek - 1 + dayNumber - 1) % 7;
-            return dayNames[dow];
+            const bg  = document.createElement('div'); bg.className = 'day-bg';
+            const num = document.createElement('div'); num.className = 'day-number'; num.textContent = day;
+            const dots = document.createElement('div'); dots.className = 'day-users';
+
+            dayEl.appendChild(bg); dayEl.appendChild(num); dayEl.appendChild(dots);
+            dayEl.addEventListener('click', () => toggleDay(day));
+            grid.appendChild(dayEl);
         }
+    }
 
-        function buildCalendar() {
-            const grid = document.getElementById('daysGrid');
-            grid.innerHTML = '';
-            for (let i = 0; i < firstDayOfWeek - 1; i++) {
-                const empty = document.createElement('div');
-                empty.className = 'day empty';
-                grid.appendChild(empty);
-            }
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dayEl = document.createElement('div');
-                dayEl.className = 'day';
-                const dow = (firstDayOfWeek - 1 + day - 1) % 7 + 1;
-                if (dow === 6 || dow === 7) dayEl.classList.add('day-weekend');
-                dayEl.dataset.day = day;
+    // ── Sélection utilisateur ──
+    document.querySelectorAll('.user-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentUser = btn.dataset.user;
+            const instr = document.getElementById('instruction');
+            instr.textContent = `✅ ${users[currentUser].name} sélectionné(e) — Cliquez sur vos jours disponibles`;
+            instr.style.background = users[currentUser].color + '20';
+            instr.style.color = users[currentUser].color;
+        });
+    });
 
-                const bg = document.createElement('div'); bg.className = 'day-bg';
-                const number = document.createElement('div'); number.className = 'day-number'; number.textContent = day;
-                const dots = document.createElement('div'); dots.className = 'day-users';
-
-                dayEl.appendChild(bg);
-                dayEl.appendChild(number);
-                dayEl.appendChild(dots);
-                dayEl.addEventListener('click', () => toggleDay(day));
-                grid.appendChild(dayEl);
-            }
+    // ── Toggle jour ──
+    function toggleDay(day) {
+        if (!currentUser) { alert('⚠️ Veuillez d\'abord sélectionner votre profil !'); return; }
+        const key = `day_${day}`;
+        if (!availabilities[key]) availabilities[key] = [];
+        const idx = availabilities[key].indexOf(currentUser);
+        if (idx > -1) {
+            availabilities[key].splice(idx, 1);
+            if (availabilities[key].length === 0) delete availabilities[key];
+        } else {
+            availabilities[key].push(currentUser);
         }
+        saveData();
+    }
 
-        // ── Sélection utilisateur ──
-        document.querySelectorAll('.user-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentUser = btn.dataset.user;
-                const instr = document.getElementById('instruction');
-                instr.textContent = `✅ ${users[currentUser].name} sélectionné(e) — Cliquez sur vos jours disponibles`;
-                instr.style.background = users[currentUser].color + '20';
-                instr.style.color = users[currentUser].color;
+    // ── Rendu ──
+    function renderAll() {
+        // Calendrier
+        document.querySelectorAll('.day:not(.empty)').forEach(dayEl => {
+            const key = `day_${dayEl.dataset.day}`;
+            const list = availabilities[key] || [];
+            const dots = dayEl.querySelector('.day-users');
+            const bg   = dayEl.querySelector('.day-bg');
+
+            dots.innerHTML = '';
+            list.forEach(u => {
+                const dot = document.createElement('div');
+                dot.className = `user-dot ${u}`;
+                dots.appendChild(dot);
             });
+
+            if (list.length === 0) {
+                bg.style.background = 'transparent';
+                dayEl.classList.remove('all-available');
+            } else if (list.length === 1) {
+                bg.style.background = users[list[0]].color;
+                bg.style.opacity = '0.2';
+                dayEl.classList.remove('all-available');
+            } else {
+                bg.style.background = `linear-gradient(135deg, ${list.map(u => users[u].color).join(', ')})`;
+                bg.style.opacity = '0.25';
+                dayEl.classList.toggle('all-available', list.length === 4);
+            }
         });
 
-        // ── Toggle jour ──
-        function toggleDay(day) {
-            if (!currentUser) { alert('⚠️ Veuillez d\'abord sélectionner votre profil !'); return; }
-            const key = `day-${day}`;
-            if (!availabilities[key]) availabilities[key] = [];
+        // Récapitulatif
+        Object.keys(users).forEach(u => {
+            let count = 0;
+            Object.values(availabilities).forEach(list => { if (list.includes(u)) count++; });
+            document.getElementById(`count-${u}`).textContent = count;
+        });
+
+        // Concordance
+        const fullEl = document.getElementById('concordanceFull');
+        const fullDays = Object.keys(availabilities)
+            .filter(k => availabilities[k].length === 4)
+            .map(k => parseInt(k.replace('day_', '')))
+            .sort((a, b) => a - b);
+
+        if (fullDays.length === 0) {
+            fullEl.innerHTML = '<div class="concordance-empty">Aucune date avec les 4 personnes disponibles pour le moment</div>';
+        } else {
+            fullEl.innerHTML = fullDays.map(d => `
+                <div class="concordance-day">
+                    <div class="concordance-day-number">${d}</div>
+                    <div class="concordance-day-label">${getDayName(d)}</div>
+                </div>`).join('');
+        }
+    }
+
+    // ── Reset ──
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        if (!currentUser) { alert('⚠️ Veuillez d\'abord sélectionner votre profil !'); return; }
+        if (!confirm(`Réinitialiser toutes les disponibilités de ${users[currentUser].name} ?`)) return;
+        Object.keys(availabilities).forEach(key => {
             const idx = availabilities[key].indexOf(currentUser);
             if (idx > -1) {
                 availabilities[key].splice(idx, 1);
                 if (availabilities[key].length === 0) delete availabilities[key];
-            } else {
-                availabilities[key].push(currentUser);
             }
-            updateCalendar();
-            updateSummary();
-            updateConcordance();
-            saveData();
-        }
-
-        // ── Rendu calendrier ──
-        function updateCalendar() {
-            document.querySelectorAll('.day:not(.empty)').forEach(dayEl => {
-                const key = `day-${dayEl.dataset.day}`;
-                const usersOnDay = availabilities[key] || [];
-                const dots = dayEl.querySelector('.day-users');
-                const bg = dayEl.querySelector('.day-bg');
-
-                dots.innerHTML = '';
-                usersOnDay.forEach(u => {
-                    const dot = document.createElement('div');
-                    dot.className = `user-dot ${u}`;
-                    dots.appendChild(dot);
-                });
-
-                if (usersOnDay.length === 0) {
-                    bg.style.background = 'transparent';
-                    dayEl.classList.remove('all-available');
-                } else if (usersOnDay.length === 1) {
-                    bg.style.background = users[usersOnDay[0]].color;
-                    bg.style.opacity = '0.2';
-                    dayEl.classList.remove('all-available');
-                } else {
-                    const colors = usersOnDay.map(u => users[u].color);
-                    bg.style.background = `linear-gradient(135deg, ${colors.join(', ')})`;
-                    bg.style.opacity = '0.25';
-                    dayEl.classList.toggle('all-available', usersOnDay.length === 4);
-                }
-            });
-        }
-
-        // ── Récapitulatif ──
-        function updateSummary() {
-            Object.keys(users).forEach(u => {
-                let count = 0;
-                Object.values(availabilities).forEach(list => { if (list.includes(u)) count++; });
-                document.getElementById(`count-${u}`).textContent = count;
-            });
-        }
-
-        // ── Concordance ──
-        function updateConcordance() {
-            const fullEl = document.getElementById('concordanceFull');
-            const fullDays = Object.keys(availabilities)
-                .filter(k => availabilities[k].length === 4)
-                .map(k => parseInt(k.replace('day-', '')))
-                .sort((a, b) => a - b);
-
-            if (fullDays.length === 0) {
-                fullEl.innerHTML = '<div class="concordance-empty">Aucune date avec les 4 personnes disponibles pour le moment</div>';
-            } else {
-                fullEl.innerHTML = fullDays.map(day => `
-                    <div class="concordance-day">
-                        <div class="concordance-day-number">${day}</div>
-                        <div class="concordance-day-label">${getDayName(day)}</div>
-                    </div>`).join('');
-            }
-        }
-
-        // ── Reset ──
-        document.getElementById('resetBtn').addEventListener('click', () => {
-            if (!currentUser) { alert('⚠️ Veuillez d\'abord sélectionner votre profil !'); return; }
-            if (!confirm(`Réinitialiser toutes les disponibilités de ${users[currentUser].name} ?`)) return;
-            Object.keys(availabilities).forEach(key => {
-                const idx = availabilities[key].indexOf(currentUser);
-                if (idx > -1) {
-                    availabilities[key].splice(idx, 1);
-                    if (availabilities[key].length === 0) delete availabilities[key];
-                }
-            });
-            updateCalendar();
-            updateSummary();
-            updateConcordance();
-            saveData();
         });
+        saveData();
+    });
 
-        // ── Stockage partagé ──
-        async function saveData() {
-            try {
-                await window.storage.set('these_alo_availabilities', JSON.stringify(availabilities), true);
-                setStatus('ok', 'Disponibilités sauvegardées et partagées ✓');
-            } catch(e) {
-                setStatus('err', 'Erreur de sauvegarde — réessayez');
-            }
-        }
+    // ── Firebase : écriture ──
+    function saveData() {
+        setStatus('loading', 'Sauvegarde en cours…');
+        set(dataRef, availabilities)
+            .then(() => setStatus('ok', 'Disponibilités sauvegardées et partagées ✓'))
+            .catch(e => setStatus('err', 'Erreur : ' + e.message));
+    }
 
-        async function loadData() {
-            try {
-                const result = await window.storage.get('these_alo_availabilities', true);
-                if (result && result.value) {
-                    availabilities = JSON.parse(result.value);
-                }
-                setStatus('ok', 'Calendrier partagé chargé — les disponibilités de tous sont visibles');
-            } catch(e) {
-                setStatus('', 'Aucune donnée précédente');
-            }
-            updateCalendar();
-            updateSummary();
-            updateConcordance();
-        }
+    // ── Firebase : lecture en temps réel ──
+    onValue(dataRef, (snapshot) => {
+        availabilities = snapshot.val() || {};
+        renderAll();
+        setStatus('ok', 'Calendrier synchronisé en temps réel ✓');
+    }, (error) => {
+        setStatus('err', 'Erreur de connexion : ' + error.message);
+    });
 
-        // ── Init ──
-        buildCalendar();
-        loadData();
-
-        // Rafraîchissement automatique toutes les 30 secondes
-        setInterval(loadData, 30000);
-    </script>
-
+    // ── Init ──
+    buildCalendar();
+</script>
 </body>
 </html>
