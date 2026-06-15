@@ -13,7 +13,8 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
+            background-attachment: fixed;
             min-height: 100vh;
             padding: 40px 20px;
             color: #2d3748;
@@ -29,7 +30,7 @@
             background: white;
             padding: 20px 40px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             margin-bottom: 16px;
             text-align: center;
         }
@@ -44,7 +45,7 @@
             border-radius: 16px;
             overflow: hidden;
             margin-bottom: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             height: 180px;
             position: relative;
         }
@@ -69,7 +70,7 @@
             background: white;
             padding: 32px 40px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             margin-bottom: 24px;
             text-align: center;
         }
@@ -107,7 +108,7 @@
             background: white;
             padding: 24px 32px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             margin-bottom: 24px;
         }
 
@@ -173,7 +174,7 @@
             background: white;
             padding: 32px 40px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             margin-bottom: 24px;
         }
 
@@ -310,7 +311,7 @@
             background: white;
             padding: 32px 40px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             margin-bottom: 24px;
         }
 
@@ -372,7 +373,7 @@
             background: white;
             padding: 32px 40px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             border-left: 6px solid #10b981;
             margin-bottom: 24px;
         }
@@ -438,63 +439,6 @@
             opacity: 0.9;
         }
 
-        /* PARTIAL CONCORDANCE */
-        .partial-concordance {
-            background: white;
-            padding: 32px 40px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-            border-left: 6px solid #3b82f6;
-            margin-bottom: 24px;
-        }
-
-        .partial-concordance h2 {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1a202c;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .partial-subtitle {
-            font-size: 14px;
-            color: #718096;
-            margin-bottom: 24px;
-        }
-
-        .partial-day {
-            padding: 14px 18px;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            border-radius: 12px;
-            font-weight: 600;
-            min-width: 140px;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
-        }
-
-        .partial-day-number {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .partial-day-users {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-        }
-
-        .partial-user-chip {
-            font-size: 10px;
-            background: rgba(255,255,255,0.25);
-            padding: 2px 8px;
-            border-radius: 100px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
         /* RESET BUTTON */
         .reset-btn {
             margin-top: 20px;
@@ -512,6 +456,18 @@
 
         .reset-btn:hover {
             background: #fecaca;
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 24px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 500;
         }
 
         /* RESPONSIVE */
@@ -540,7 +496,7 @@
         
         <!-- IMAGE HEADER -->
         <div class="image-header">
-            <img src="https://www.medflixs.com/images/conferences/le-traitement-non-immunosuppresseur-de-la-n-phropathie-iga_big.jpeg" alt="Néphropathie à IgA">
+            <img src="https://raisincdn.akaraisin.com/Org_129/EventLocation_24741/Public/HlTbK131531.jpg" alt="Néphropathie à IgA">
         </div>
         
         <!-- HEADER -->
@@ -632,14 +588,8 @@
             </div>
         </div>
         
-        <!-- CONCORDANCE PARTIELLE (3/4) -->
-        <div class="partial-concordance">
-            <h2>🔵 Concordance partielle (3 sur 4)</h2>
-            <p class="partial-subtitle">Jours où <strong>3 personnes</strong> sont disponibles</p>
-            <div class="concordance-days" id="concordancePartial">
-                <div class="concordance-empty">Aucune date avec 3 personnes disponibles pour le moment</div>
-            </div>
-        </div>
+        <!-- FOOTER -->
+        <div class="footer">— Thèse ALO —</div>
         
     </div>
 
@@ -658,8 +608,7 @@
         let availabilities = {};
 
         // ===== INITIALISATION CALENDRIER =====
-        // Octobre 2026 : le 1er octobre 2026 = JEUDI
-        const firstDayOfWeek = 4; // Jeudi = 4 (Lundi = 1)
+        const firstDayOfWeek = 4; // 1er octobre 2026 = JEUDI
         const daysInMonth = 31;
 
         function getDayName(dayNumber) {
@@ -803,10 +752,7 @@
         // ===== MISE À JOUR DE LA CONCORDANCE =====
         function updateConcordance() {
             const fullEl = document.getElementById('concordanceFull');
-            const partialEl = document.getElementById('concordancePartial');
-            
             const fullDays = [];
-            const partialDays = [];
             
             Object.keys(availabilities).forEach(key => {
                 const day = parseInt(key.replace('day-', ''));
@@ -814,15 +760,11 @@
                 
                 if (usersOnDay.length === 4) {
                     fullDays.push({ day, users: usersOnDay });
-                } else if (usersOnDay.length === 3) {
-                    partialDays.push({ day, users: usersOnDay });
                 }
             });
             
             fullDays.sort((a, b) => a.day - b.day);
-            partialDays.sort((a, b) => a.day - b.day);
             
-            // Concordance complète
             if (fullDays.length === 0) {
                 fullEl.innerHTML = '<div class="concordance-empty">Aucune date avec les 4 personnes disponibles pour le moment</div>';
             } else {
@@ -830,20 +772,6 @@
                     <div class="concordance-day">
                         <div class="concordance-day-number">${day}</div>
                         <div class="concordance-day-label">${getDayName(day)}</div>
-                    </div>
-                `).join('');
-            }
-            
-            // Concordance partielle
-            if (partialDays.length === 0) {
-                partialEl.innerHTML = '<div class="concordance-empty">Aucune date avec 3 personnes disponibles pour le moment</div>';
-            } else {
-                partialEl.innerHTML = partialDays.map(({ day, users: usersList }) => `
-                    <div class="partial-day">
-                        <div class="partial-day-number">${day} ${getDayName(day)}</div>
-                        <div class="partial-day-users">
-                            ${usersList.map(u => `<span class="partial-user-chip">${users[u].name.replace('Pr ', '').replace('Dr ', '')}</span>`).join('')}
-                        </div>
                     </div>
                 `).join('');
             }
