@@ -25,7 +25,6 @@
             margin: 0 auto;
         }
 
-        /* LOGO CHU */
         .chu-logo-wrapper {
             background: white;
             padding: 20px 40px;
@@ -40,7 +39,6 @@
             width: auto;
         }
 
-        /* IMAGE HEADER */
         .image-header {
             border-radius: 16px;
             overflow: hidden;
@@ -65,7 +63,6 @@
             pointer-events: none;
         }
 
-        /* HEADER */
         .header {
             background: white;
             padding: 32px 40px;
@@ -103,7 +100,29 @@
             text-align: center;
         }
 
-        /* SÉLECTION UTILISATEUR */
+        /* STATUS BAR */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-size: 13px;
+            color: #718096;
+        }
+        .status-dot {
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            background: #cbd5e0;
+            flex-shrink: 0;
+            transition: background 0.3s;
+        }
+        .status-dot.ok { background: #10b981; }
+        .status-dot.err { background: #ef4444; }
+
         .user-selector {
             background: white;
             padding: 24px 32px;
@@ -160,16 +179,11 @@
         .user-btn[data-user="gnemmi"] .user-color { background: #10b981; }
         .user-btn[data-user="maanaoui"] .user-color { background: #f59e0b; }
 
-        .user-btn.active {
-            border-color: currentColor;
-        }
+        .user-btn[data-user="leroy"].active { background: #fef2f2; color: #ef4444; border-color: #ef4444; }
+        .user-btn[data-user="gibier"].active { background: #eff6ff; color: #3b82f6; border-color: #3b82f6; }
+        .user-btn[data-user="gnemmi"].active { background: #ecfdf5; color: #10b981; border-color: #10b981; }
+        .user-btn[data-user="maanaoui"].active { background: #fffbeb; color: #f59e0b; border-color: #f59e0b; }
 
-        .user-btn[data-user="leroy"].active { background: #fef2f2; color: #ef4444; }
-        .user-btn[data-user="gibier"].active { background: #eff6ff; color: #3b82f6; }
-        .user-btn[data-user="gnemmi"].active { background: #ecfdf5; color: #10b981; }
-        .user-btn[data-user="maanaoui"].active { background: #fffbeb; color: #f59e0b; }
-
-        /* CALENDRIER */
         .calendar {
             background: white;
             padding: 32px 40px;
@@ -201,7 +215,6 @@
             border-radius: 8px;
         }
 
-        /* Jours de la semaine */
         .weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -219,7 +232,6 @@
             padding: 8px 0;
         }
 
-        /* Grille des jours */
         .days-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -276,7 +288,6 @@
             color: #cbd5e0;
         }
 
-        /* Indicateurs utilisateurs */
         .day-users {
             display: flex;
             gap: 3px;
@@ -298,7 +309,6 @@
         .user-dot.gnemmi { background: #10b981; }
         .user-dot.maanaoui { background: #f59e0b; }
 
-        /* Background gradient quand plusieurs utilisateurs */
         .day-bg {
             position: absolute;
             inset: 0;
@@ -306,7 +316,6 @@
             z-index: 1;
         }
 
-        /* TABLEAU RÉCAPITULATIF */
         .summary {
             background: white;
             padding: 32px 40px;
@@ -368,7 +377,6 @@
             letter-spacing: 1px;
         }
 
-        /* CONCORDANCE BLOCK */
         .concordance {
             background: white;
             padding: 32px 40px;
@@ -439,7 +447,6 @@
             opacity: 0.9;
         }
 
-        /* RESET BUTTON */
         .reset-btn {
             margin-top: 20px;
             padding: 10px 20px;
@@ -458,7 +465,6 @@
             background: #fecaca;
         }
 
-        /* FOOTER */
         .footer {
             text-align: center;
             margin-top: 40px;
@@ -470,7 +476,6 @@
             font-weight: 500;
         }
 
-        /* RESPONSIVE */
         @media (max-width: 768px) {
             body { padding: 20px 12px; }
             .header h1 { font-size: 24px; }
@@ -489,17 +494,14 @@
 
     <div class="container">
         
-        <!-- LOGO CHU LILLE -->
         <div class="chu-logo-wrapper">
             <img src="https://chu-lille.fr/wp-content/uploads/2018/12/@2xCHU_Lille_Logo.png" alt="CHU Lille" class="chu-logo">
         </div>
         
-        <!-- IMAGE HEADER -->
         <div class="image-header">
             <img src="https://raisincdn.akaraisin.com/Org_129/EventLocation_24741/Public/HlTbK131531.jpg" alt="Néphropathie à IgA">
         </div>
         
-        <!-- HEADER -->
         <div class="header">
             <h1>📅 Thèse ALO</h1>
             <p class="subtitle">Calendrier des disponibilités — Octobre 2026</p>
@@ -507,8 +509,13 @@
                 🔬 Développement d'un algorithme d'intelligence artificielle pour la classification automatique du score MESC de la classification d'Oxford dans la néphropathie à IgA à partir de biopsies rénales numérisées.
             </div>
         </div>
+
+        <!-- BARRE DE STATUT -->
+        <div class="status-bar">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">Connexion au calendrier partagé…</span>
+        </div>
         
-        <!-- SÉLECTION UTILISATEUR -->
         <div class="user-selector">
             <h2>👤 Sélectionnez votre profil</h2>
             <div class="users-grid">
@@ -531,7 +538,6 @@
             </div>
         </div>
         
-        <!-- CALENDRIER -->
         <div class="calendar">
             <div class="calendar-header">
                 <h2 class="calendar-title">Octobre 2026</h2>
@@ -551,7 +557,6 @@
             <div class="days-grid" id="daysGrid"></div>
         </div>
         
-        <!-- RÉCAPITULATIF -->
         <div class="summary">
             <h2>📊 Récapitulatif des disponibilités</h2>
             <div class="summary-grid">
@@ -579,7 +584,6 @@
             <button class="reset-btn" id="resetBtn">🔄 Réinitialiser mes disponibilités</button>
         </div>
         
-        <!-- CONCORDANCE COMPLÈTE (4/4) -->
         <div class="concordance">
             <h2>⭐ Concordance parfaite</h2>
             <p class="concordance-subtitle">Jours où les <strong>4 personnes</strong> sont disponibles</p>
@@ -588,132 +592,108 @@
             </div>
         </div>
         
-        <!-- FOOTER -->
         <div class="footer">— Thèse ALO —</div>
         
     </div>
 
     <script>
-        // CONFIGURATION
         const users = {
-            leroy: { name: 'Pr LEROY', color: '#ef4444' },
-            gibier: { name: 'Dr GIBIER', color: '#3b82f6' },
-            gnemmi: { name: 'Pr GNEMMI', color: '#10b981' },
+            leroy:    { name: 'Pr LEROY',    color: '#ef4444' },
+            gibier:   { name: 'Dr GIBIER',   color: '#3b82f6' },
+            gnemmi:   { name: 'Pr GNEMMI',   color: '#10b981' },
             maanaoui: { name: 'Dr MAANAOUI', color: '#f59e0b' }
         };
 
-        const dayNames = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+        const dayNames = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+        const firstDayOfWeek = 4; // 1er octobre 2026 = Jeudi
+        const daysInMonth = 31;
 
         let currentUser = null;
         let availabilities = {};
 
-        // ===== INITIALISATION CALENDRIER =====
-        const firstDayOfWeek = 4; // 1er octobre 2026 = JEUDI
-        const daysInMonth = 31;
+        // ── Statut ──
+        function setStatus(state, msg) {
+            const dot = document.getElementById('statusDot');
+            dot.className = 'status-dot' + (state === 'ok' ? ' ok' : state === 'err' ? ' err' : '');
+            document.getElementById('statusText').textContent = msg;
+        }
 
+        // ── Calendrier ──
         function getDayName(dayNumber) {
-            const dayOfWeek = (firstDayOfWeek - 1 + dayNumber - 1) % 7;
-            return dayNames[dayOfWeek];
+            const dow = (firstDayOfWeek - 1 + dayNumber - 1) % 7;
+            return dayNames[dow];
         }
 
         function buildCalendar() {
             const grid = document.getElementById('daysGrid');
             grid.innerHTML = '';
-
-            const emptyDays = firstDayOfWeek - 1;
-            for (let i = 0; i < emptyDays; i++) {
+            for (let i = 0; i < firstDayOfWeek - 1; i++) {
                 const empty = document.createElement('div');
                 empty.className = 'day empty';
                 grid.appendChild(empty);
             }
-
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayEl = document.createElement('div');
                 dayEl.className = 'day';
-                
-                const dayOfWeek = (firstDayOfWeek - 1 + day - 1) % 7 + 1;
-                if (dayOfWeek === 6 || dayOfWeek === 7) {
-                    dayEl.classList.add('day-weekend');
-                }
-                
+                const dow = (firstDayOfWeek - 1 + day - 1) % 7 + 1;
+                if (dow === 6 || dow === 7) dayEl.classList.add('day-weekend');
                 dayEl.dataset.day = day;
-                
-                const bg = document.createElement('div');
-                bg.className = 'day-bg';
-                
-                const number = document.createElement('div');
-                number.className = 'day-number';
-                number.textContent = day;
-                
-                const dots = document.createElement('div');
-                dots.className = 'day-users';
-                
+
+                const bg = document.createElement('div'); bg.className = 'day-bg';
+                const number = document.createElement('div'); number.className = 'day-number'; number.textContent = day;
+                const dots = document.createElement('div'); dots.className = 'day-users';
+
                 dayEl.appendChild(bg);
                 dayEl.appendChild(number);
                 dayEl.appendChild(dots);
-                
                 dayEl.addEventListener('click', () => toggleDay(day));
-                
                 grid.appendChild(dayEl);
             }
         }
 
-        // ===== SÉLECTION D'UTILISATEUR =====
+        // ── Sélection utilisateur ──
         document.querySelectorAll('.user-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentUser = btn.dataset.user;
-                
-                document.getElementById('instruction').textContent = 
-                    `✅ ${users[currentUser].name} sélectionné(e) — Cliquez sur vos jours disponibles`;
-                document.getElementById('instruction').style.background = users[currentUser].color + '20';
-                document.getElementById('instruction').style.color = users[currentUser].color;
+                const instr = document.getElementById('instruction');
+                instr.textContent = `✅ ${users[currentUser].name} sélectionné(e) — Cliquez sur vos jours disponibles`;
+                instr.style.background = users[currentUser].color + '20';
+                instr.style.color = users[currentUser].color;
             });
         });
 
-        // ===== TOGGLE JOUR =====
+        // ── Toggle jour ──
         function toggleDay(day) {
-            if (!currentUser) {
-                alert('⚠️ Veuillez d\'abord sélectionner votre profil !');
-                return;
-            }
-
+            if (!currentUser) { alert('⚠️ Veuillez d\'abord sélectionner votre profil !'); return; }
             const key = `day-${day}`;
-            if (!availabilities[key]) {
-                availabilities[key] = [];
-            }
-
-            const userIndex = availabilities[key].indexOf(currentUser);
-            if (userIndex > -1) {
-                availabilities[key].splice(userIndex, 1);
-                if (availabilities[key].length === 0) {
-                    delete availabilities[key];
-                }
+            if (!availabilities[key]) availabilities[key] = [];
+            const idx = availabilities[key].indexOf(currentUser);
+            if (idx > -1) {
+                availabilities[key].splice(idx, 1);
+                if (availabilities[key].length === 0) delete availabilities[key];
             } else {
                 availabilities[key].push(currentUser);
             }
-
             updateCalendar();
             updateSummary();
             updateConcordance();
             saveData();
         }
 
-        // ===== MISE À JOUR DU CALENDRIER =====
+        // ── Rendu calendrier ──
         function updateCalendar() {
             document.querySelectorAll('.day:not(.empty)').forEach(dayEl => {
-                const day = dayEl.dataset.day;
-                const key = `day-${day}`;
+                const key = `day-${dayEl.dataset.day}`;
                 const usersOnDay = availabilities[key] || [];
-                
                 const dots = dayEl.querySelector('.day-users');
                 const bg = dayEl.querySelector('.day-bg');
-                
+
                 dots.innerHTML = '';
-                usersOnDay.forEach(user => {
+                usersOnDay.forEach(u => {
                     const dot = document.createElement('div');
-                    dot.className = `user-dot ${user}`;
+                    dot.className = `user-dot ${u}`;
                     dots.appendChild(dot);
                 });
 
@@ -728,105 +708,87 @@
                     const colors = usersOnDay.map(u => users[u].color);
                     bg.style.background = `linear-gradient(135deg, ${colors.join(', ')})`;
                     bg.style.opacity = '0.25';
-                    
-                    if (usersOnDay.length === 4) {
-                        dayEl.classList.add('all-available');
-                    } else {
-                        dayEl.classList.remove('all-available');
-                    }
+                    dayEl.classList.toggle('all-available', usersOnDay.length === 4);
                 }
             });
         }
 
-        // ===== MISE À JOUR DU RÉCAPITULATIF =====
+        // ── Récapitulatif ──
         function updateSummary() {
-            Object.keys(users).forEach(userKey => {
+            Object.keys(users).forEach(u => {
                 let count = 0;
-                Object.values(availabilities).forEach(usersOnDay => {
-                    if (usersOnDay.includes(userKey)) count++;
-                });
-                document.getElementById(`count-${userKey}`).textContent = count;
+                Object.values(availabilities).forEach(list => { if (list.includes(u)) count++; });
+                document.getElementById(`count-${u}`).textContent = count;
             });
         }
 
-        // ===== MISE À JOUR DE LA CONCORDANCE =====
+        // ── Concordance ──
         function updateConcordance() {
             const fullEl = document.getElementById('concordanceFull');
-            const fullDays = [];
-            
-            Object.keys(availabilities).forEach(key => {
-                const day = parseInt(key.replace('day-', ''));
-                const usersOnDay = availabilities[key];
-                
-                if (usersOnDay.length === 4) {
-                    fullDays.push({ day, users: usersOnDay });
-                }
-            });
-            
-            fullDays.sort((a, b) => a.day - b.day);
-            
+            const fullDays = Object.keys(availabilities)
+                .filter(k => availabilities[k].length === 4)
+                .map(k => parseInt(k.replace('day-', '')))
+                .sort((a, b) => a - b);
+
             if (fullDays.length === 0) {
                 fullEl.innerHTML = '<div class="concordance-empty">Aucune date avec les 4 personnes disponibles pour le moment</div>';
             } else {
-                fullEl.innerHTML = fullDays.map(({ day }) => `
+                fullEl.innerHTML = fullDays.map(day => `
                     <div class="concordance-day">
                         <div class="concordance-day-number">${day}</div>
                         <div class="concordance-day-label">${getDayName(day)}</div>
-                    </div>
-                `).join('');
+                    </div>`).join('');
             }
         }
 
-        // ===== RÉINITIALISATION =====
+        // ── Reset ──
         document.getElementById('resetBtn').addEventListener('click', () => {
-            if (!currentUser) {
-                alert('⚠️ Veuillez d\'abord sélectionner votre profil !');
-                return;
-            }
-            
-            if (confirm(`Réinitialiser toutes les disponibilités de ${users[currentUser].name} ?`)) {
-                Object.keys(availabilities).forEach(key => {
-                    const index = availabilities[key].indexOf(currentUser);
-                    if (index > -1) {
-                        availabilities[key].splice(index, 1);
-                        if (availabilities[key].length === 0) {
-                            delete availabilities[key];
-                        }
-                    }
-                });
-                updateCalendar();
-                updateSummary();
-                updateConcordance();
-                saveData();
-            }
+            if (!currentUser) { alert('⚠️ Veuillez d\'abord sélectionner votre profil !'); return; }
+            if (!confirm(`Réinitialiser toutes les disponibilités de ${users[currentUser].name} ?`)) return;
+            Object.keys(availabilities).forEach(key => {
+                const idx = availabilities[key].indexOf(currentUser);
+                if (idx > -1) {
+                    availabilities[key].splice(idx, 1);
+                    if (availabilities[key].length === 0) delete availabilities[key];
+                }
+            });
+            updateCalendar();
+            updateSummary();
+            updateConcordance();
+            saveData();
         });
 
-        // ===== SAUVEGARDE LOCALE =====
+        // ── Stockage partagé ──
         async function saveData() {
             try {
-                await window.storage.set('availabilities', JSON.stringify(availabilities), true);
-            } catch (e) {
-                console.log('Sauvegarde locale uniquement');
+                await window.storage.set('these_alo_availabilities', JSON.stringify(availabilities), true);
+                setStatus('ok', 'Disponibilités sauvegardées et partagées ✓');
+            } catch(e) {
+                setStatus('err', 'Erreur de sauvegarde — réessayez');
             }
         }
 
         async function loadData() {
             try {
-                const result = await window.storage.get('availabilities', true);
+                const result = await window.storage.get('these_alo_availabilities', true);
                 if (result && result.value) {
                     availabilities = JSON.parse(result.value);
-                    updateCalendar();
-                    updateSummary();
-                    updateConcordance();
                 }
-            } catch (e) {
-                console.log('Pas de données précédentes');
+                setStatus('ok', 'Calendrier partagé chargé — les disponibilités de tous sont visibles');
+            } catch(e) {
+                setStatus('', 'Aucune donnée précédente');
             }
+            updateCalendar();
+            updateSummary();
+            updateConcordance();
         }
 
-        // ===== INITIALISATION =====
+        // ── Init ──
         buildCalendar();
         loadData();
+
+        // Rafraîchissement automatique toutes les 30 secondes
+        setInterval(loadData, 30000);
     </script>
 
 </body>
