@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Planning des internes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Mise en page : une seule colonne qui suit le travail réel. Indispos, puis semaines empilées, puis compteur.
+   Couleurs : fond de lame de verre, une couleur de colorant histologique par interne. */
+:root{
+  --bg:#F4F2F7; --surface:#FFFFFF; --sunken:#ECE8F1; --line:#DDD7E5; --line-strong:#B8AFC8;
+  --fg:#231C33; --muted:#655D78; --accent:#3F2F8F; --on-accent:#FFFFFF; --on-c:#FFFFFF;
+  --err:#B3162B; --err-bg:#FCE8EA; --warn:#7F5300; --warn-bg:#FAEFD6; --ok:#146A47; --ok-bg:#DFF2E8;
+  --ALO:#4B3FA8; --ASIM:#C92C6A; --CLEP:#A36706; --MAJ:#1B7F53; --AGR:#1A6AA3; --MTS:#BC4125;
+  --font-display:"Bricolage Grotesque","Hanken Grotesk",system-ui,sans-serif;
+  --font-body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --hatch:repeating-linear-gradient(135deg,transparent 0 5px,var(--sunken) 5px 7px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14111C; --surface:#1D1928; --sunken:#2A2537; --line:#332D42; --line-strong:#544C68;
+  --fg:#EEEAF5; --muted:#A79FB9; --accent:#B4A9FF; --on-accent:#17132A; --on-c:#14111C;
+  --err:#FF8A95; --err-bg:#3C1A22; --warn:#F2C368; --warn-bg:#35290F; --ok:#6FD6A8; --ok-bg:#15332A;
+  --ALO:#A99EFF; --ASIM:#FF87B5; --CLEP:#EDBB57; --MAJ:#62D3A1; --AGR:#6DBDF0; --MTS:#FF9676;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#14111C; --surface:#1D1928; --sunken:#2A2537; --line:#332D42; --line-strong:#544C68;
+  --fg:#EEEAF5; --muted:#A79FB9; --accent:#B4A9FF; --on-accent:#17132A; --on-c:#14111C;
+  --err:#FF8A95; --err-bg:#3C1A22; --warn:#F2C368; --warn-bg:#35290F; --ok:#6FD6A8; --ok-bg:#15332A;
+  --ALO:#A99EFF; --ASIM:#FF87B5; --CLEP:#EDBB57; --MAJ:#62D3A1; --AGR:#6DBDF0; --MTS:#FF9676;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 15px/1.45 var(--font-body)}
+button,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.page{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:40px;
+  padding-block:28px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* En-tête */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 32px}
+.top>div{min-width:0}
+h1{font:800 clamp(30px,5vw,42px)/1.05 var(--font-display);letter-spacing:-.02em;margin:0;text-wrap:balance}
+.lead{margin:8px 0 0;color:var(--muted)}
+.sync{font-size:13px;color:var(--muted);display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.sync::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--line-strong)}
+.sync[data-s="ok"]::before{background:var(--ok)}
+.sync[data-s="busy"]::before{background:var(--warn)}
+.sync[data-s="bad"]::before{background:var(--err)}
+.notice{background:var(--warn-bg);color:var(--warn);padding:10px 14px;border-radius:5px;font-weight:500}
+
+/* Sections */
+.sec{display:flex;flex-direction:column;gap:14px;min-width:0}
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 24px}
+.sec-head>div{min-width:0}
+h2{font:600 22px/1.2 var(--font-display);letter-spacing:-.01em;margin:0}
+.sec-head p{margin:2px 0 0;color:var(--muted);font-size:14px}
+
+/* Boutons */
+.btn{border:1px solid var(--line-strong);background:var(--surface);border-radius:5px;padding:7px 12px;font-weight:600;font-size:14px;cursor:pointer;white-space:nowrap}
+.btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.primary:hover:not(:disabled){filter:brightness(1.12);color:var(--on-accent)}
+.btn.danger{border-color:var(--err);color:var(--err)}
+.btn:disabled{opacity:.5;cursor:default}
+.icon-btn{width:32px;height:32px;padding:0;display:inline-grid;place-items:center;font-size:18px;line-height:1}
+
+/* Indispos */
+.off-tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+.seg{display:inline-flex;border:1px solid var(--line-strong);border-radius:5px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:7px 11px;font-weight:600;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.seg button+button{border-left:1px solid var(--line-strong)}
+.seg button:focus-visible{outline-offset:-3px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.seg i{width:12px;height:12px;border:1px solid currentColor;border-radius:2px;display:block;flex:none}
+.seg .g-jour{background:currentColor}
+.seg .g-matin{background:linear-gradient(to bottom,currentColor 50%,transparent 50%)}
+.seg .g-aprem{background:linear-gradient(to top,currentColor 50%,transparent 50%)}
+.month{display:flex;align-items:center;gap:8px}
+.month strong{min-width:128px;text-align:center;font-weight:600}
+.cals{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.cal-head{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.code{font:600 13px/1 var(--font-mono);letter-spacing:.06em;padding:5px 7px;border-radius:3px;
+  background:color-mix(in oklab,var(--c) 17%,var(--surface));color:color-mix(in oklab,var(--c) 76%,var(--fg))}
+.cal-count{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;font-variant-numeric:tabular-nums}
+.cal-dow{font-size:10.5px;text-align:center;color:var(--muted);font-weight:600}
+.day{aspect-ratio:1;min-height:24px;padding:0;border:0;background:transparent;border-radius:3px;font-size:12px;cursor:pointer;position:relative}
+.day:hover:not(:disabled){background:var(--sunken)}
+.day:disabled{color:var(--muted);opacity:.45;cursor:default}
+.day.ferie{color:var(--muted);text-decoration:underline dotted}
+.day.today{box-shadow:inset 0 0 0 1.5px var(--line-strong)}
+.day[aria-pressed="true"]{background:var(--c);color:var(--on-c);font-weight:700;text-decoration:none}
+.day[aria-pressed="true"]:hover:not(:disabled){background:var(--c)}
+.day[data-part]{--half:color-mix(in oklab,var(--c) 42%,var(--surface));font-weight:700;text-decoration:none}
+.day[data-part="matin"],.day[data-part="matin"]:hover:not(:disabled){background:linear-gradient(to bottom,var(--half) 50%,transparent 50%);box-shadow:inset 0 2px 0 var(--c)}
+.day[data-part="aprem"],.day[data-part="aprem"]:hover:not(:disabled){background:linear-gradient(to top,var(--half) 50%,transparent 50%);box-shadow:inset 0 -2px 0 var(--c)}
+
+/* Légende */
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.legend .code{border:1px solid transparent;cursor:pointer;padding:7px 9px}
+.legend .code[aria-pressed="true"]{border-color:var(--c)}
+.legend small{color:var(--muted);font-size:13px;margin-left:4px}
+
+/* Semaines */
+.weeks{display:flex;flex-direction:column;gap:16px}
+.week{background:var(--surface);border:1px solid var(--line);border-radius:6px;min-width:0;overflow:hidden}
+.week.now{border-color:var(--accent)}
+.week-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:12px 14px}
+.week-id{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;background:none;border:0;padding:0;cursor:pointer;text-align:left;min-width:0}
+.chev{color:var(--muted);transition:transform .12s;display:inline-block}
+.week.is-open .chev{transform:rotate(90deg)}
+.label{font:600 13px/1 var(--font-mono);letter-spacing:.06em;background:var(--sunken);padding:5px 7px;border-radius:3px;white-space:nowrap}
+.dates{font-weight:600;white-space:nowrap}
+.rel{font-size:13px;color:var(--muted);white-space:nowrap}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-size:12.5px;font-weight:600;padding:3px 8px;border-radius:3px;background:var(--sunken);color:var(--muted);white-space:nowrap}
+.pill.err{background:var(--err-bg);color:var(--err)}
+.pill.warn{background:var(--warn-bg);color:var(--warn)}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}
+.week-actions{margin-left:auto;display:flex;gap:6px}
+.grid-scroll{overflow-x:auto;border-top:1px solid var(--line)}
+table.grid{border-collapse:separate;border-spacing:0;width:100%;min-width:760px;table-layout:fixed}
+.grid th,.grid td{padding:4px;border-bottom:1px solid var(--line);vertical-align:middle}
+.grid tbody tr:last-child>*{border-bottom:0}
+.grid thead th{font-weight:600;font-size:13px;text-align:center;padding:8px 4px;background:var(--surface)}
+.grid .post-col{width:128px}
+.grid th[scope="row"],.grid .corner{position:sticky;left:0;z-index:1;background:var(--surface);text-align:left;padding-left:14px;border-right:1px solid var(--line)}
+.grid th[scope="row"]{font-weight:600;font-size:14px;line-height:1.2}
+.grid th[scope="row"] small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.grid tr.break>*{border-top:1px solid var(--line-strong)}
+.dnum{font-variant-numeric:tabular-nums}
+.is-today{color:var(--accent)}
+.ferie-tag{display:block;font-weight:500;font-size:11.5px;color:var(--muted)}
+.ferie-tag button{background:none;border:0;padding:0;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline;font-size:11.5px}
+.no-post{background:var(--hatch)}
+.closed{background:var(--hatch);text-align:center;font-size:12.5px;color:var(--muted)}
+.closed span{background:var(--surface);padding:2px 6px;border-radius:3px}
+.sat{border-left:1px solid var(--line-strong);text-align:center;padding:8px!important}
+.sat-box{display:flex;flex-direction:column;gap:6px}
+.sat-title{font-size:12px;color:var(--muted);font-weight:600}
+.sat-hint{font-size:11.5px;color:var(--muted);line-height:1.25}
+.sat-hint.warn{color:var(--warn);font-weight:600}
+.cell{position:relative}
+.pick{appearance:none;-webkit-appearance:none;width:100%;height:36px;padding:0 4px;border-radius:4px;border:1px solid transparent;
+  font:600 13.5px var(--font-mono);letter-spacing:.05em;text-align:center;text-align-last:center;cursor:pointer;
+  background:color-mix(in oklab,var(--c) 17%,var(--surface));color:color-mix(in oklab,var(--c) 76%,var(--fg))}
+.pick.empty{background:transparent;border:1px dashed var(--line-strong);color:var(--muted)}
+.pick:hover:not(:disabled){border-color:var(--c,var(--accent))}
+.pick:disabled{cursor:default;opacity:.8}
+.pick option{color:var(--fg);background:var(--surface);font-family:var(--font-body)}
+.cell.bad .pick{border:2px solid var(--err)}
+.cell.warn .pick{border:2px solid var(--warn)}
+.cell.bad::after,.cell.warn::after{content:"!";position:absolute;top:-4px;right:-3px;width:15px;height:15px;border-radius:50%;
+  font:700 11px/15px var(--font-body);text-align:center;background:var(--err);color:var(--surface);pointer-events:none}
+.cell.warn::after{background:var(--warn)}
+main.hl .pick:not(.on){opacity:.28}
+.offrow th,.offrow td{background:var(--bg)}
+.offrow th[scope="row"]{font-size:12.5px;font-weight:500;color:var(--muted);background:var(--bg)}
+.offrow td{text-align:center;font:500 11.5px/1.4 var(--font-mono);color:var(--muted);letter-spacing:.03em}
+.offrow td span{display:block;white-space:nowrap}
+.issues{list-style:none;margin:0;padding:10px 14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:5px;font-size:14px}
+.issues li{display:flex;gap:8px;align-items:baseline}
+.issues b{flex:none;font-size:12px;padding:1px 6px;border-radius:3px}
+.issues .e b{background:var(--err-bg);color:var(--err)}
+.issues .w b{background:var(--warn-bg);color:var(--warn)}
+.add-week{align-self:flex-start}
+
+/* Compteur */
+.count-wrap{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
+table.count{border-collapse:collapse;width:100%;min-width:560px;font-variant-numeric:tabular-nums}
+.count th,.count td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:center}
+.count tbody tr:last-child>*{border-bottom:0}
+.count thead th{font-size:12.5px;font-weight:600;color:var(--muted);line-height:1.2;vertical-align:bottom}
+.count th[scope="row"],.count thead th:first-child{text-align:left}
+.count .main{width:42%;text-align:left}
+.bar-row{display:flex;align-items:center;gap:10px}
+.bar-row strong{font:800 20px/1 var(--font-display);min-width:26px}
+.bar{flex:1;height:8px;border-radius:2px;background:var(--sunken);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--c);border-radius:2px}
+.wk{font:500 12.5px var(--font-mono);color:var(--muted)}
+.wk.has{color:var(--fg);font-weight:600}
+.gap-line{margin:0;font-size:14px;color:var(--muted)}
+.gap-line b{color:var(--fg)}
+
+details.rules{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 14px;font-size:14px}
+details.rules summary{cursor:pointer;font-weight:600}
+details.rules ul{margin:10px 0 2px;padding-left:18px;display:flex;flex-direction:column;gap:4px;max-width:72ch}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;
+  background:var(--fg);color:var(--bg);padding:9px 14px;border-radius:5px;font-weight:500;font-size:14px;max-width:calc(100vw - 32px)}
+
+@media (max-width:1080px){.cals{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:560px){
+  .cals{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .cal{padding:7px}
+  .grid .post-col{width:104px}
+  .grid th[scope="row"],.grid .corner{padding-left:10px}
+  .week-actions{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){.chev{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="top">
+    <div>
+      <h1>Planning des internes</h1>
+      <p class="lead" id="lead">Chargement du planning…</p>
+    </div>
+    <span class="sync" id="sync" data-s="wait" role="status">Connexion…</span>
+  </header>
+  <div class="notice" id="notice" hidden></div>
+
+  <section class="sec" aria-labelledby="h-off">
+    <div class="sec-head">
+      <div>
+        <h2 id="h-off">Indispos</h2>
+        <p>Choisis Journée, Matin ou Après-midi, puis clique sur les jours. Un second clic enlève la coche.</p>
+      </div>
+      <div class="off-tools">
+        <div class="seg" role="group" aria-label="Partie de la journée à cocher">
+          <button id="mode-jour" data-act="off-mode" data-m="jour" aria-pressed="true"><i class="g-jour"></i>Journée</button>
+          <button id="mode-matin" data-act="off-mode" data-m="matin" aria-pressed="false"><i class="g-matin"></i>Matin</button>
+          <button id="mode-aprem" data-act="off-mode" data-m="aprem" aria-pressed="false"><i class="g-aprem"></i>Après-midi</button>
+        </div>
+        <div class="month">
+          <button class="btn icon-btn" id="m-prev" data-act="month" data-n="-1" aria-label="Mois précédent">‹</button>
+          <strong id="month-label"></strong>
+          <button class="btn icon-btn" id="m-next" data-act="month" data-n="1" aria-label="Mois suivant">›</button>
+        </div>
+      </div>
+    </div>
+    <div class="cals" id="cals"></div>
+  </section>
+
+  <main class="sec" id="main" aria-labelledby="h-weeks">
+    <div class="sec-head">
+      <div>
+        <h2 id="h-weeks">Semaines</h2>
+        <p>Une nouvelle semaine s'ajoute toute seule en bas chaque lundi. Les anciennes restent, repliées.</p>
+      </div>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="weeks" id="weeks"></div>
+    <button class="btn add-week" id="add-week" data-act="add-week">Ajouter la semaine suivante</button>
+    <details class="rules">
+      <summary>Règles appliquées</summary>
+      <ul>
+        <li>Un interne n'a qu'un poste par jour. Le soutien est le seul poste qui peut s'ajouter à un autre.</li>
+        <li>Le soutien ne peut pas être tenu par l'interne de réception de l'après-midi.</li>
+        <li>Le samedi matin revient en général à l'interne du soutien du vendredi. Un écart est signalé mais reste possible.</li>
+        <li>Soutien : un seul par semaine pour chaque interne.</li>
+        <li>Fœto : lundi, mercredi et vendredi uniquement. MAJ n'est pas posté en Fœto pour le moment.</li>
+        <li>Indispo le matin : pas de poste du matin, ni le samedi matin. Indispo l'après-midi : pas de réception après-midi ni de soutien.</li>
+        <li>Un interne indispo n'est jamais proposé. S'il est posté à la main, la case passe en alerte.</li>
+        <li>« Proposer » complète seulement les cases vides. Il compare 200 combinaisons et garde la plus équilibrée, en commençant par la réception de l'après-midi, puis tous les autres postes. Tes saisies ne sont pas modifiées.</li>
+        <li>Les jours fériés sont fermés par défaut. Tu peux les rouvrir depuis l'en-tête du jour.</li>
+      </ul>
+    </details>
+  </main>
+
+  <section class="sec" aria-labelledby="h-count">
+    <div class="sec-head">
+      <div>
+        <h2 id="h-count">Compteur d'après-midi</h2>
+        <p>Réceptions de l'après-midi sur toutes les semaines du planning. Le soutien n'est pas compté.</p>
+      </div>
+    </div>
+    <div class="count-wrap" id="count"></div>
+    <p class="gap-line" id="gap"></p>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+/* ===== À REMPLIR : colle ici la configuration de ton projet Firebase ===== */
+const FIREBASE_CONFIG = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
+};
+/* ========================================================================= */
+</script>
+<script>
+/*CORE-START*/
+const INTERNS = ['ALO','ASIM','CLEP','MAJ','AGR','MTS'];
+const POSTS = [
+  {id:'recM', name:'Réception', period:'Matin'},
+  {id:'mac1', name:'Macro 1', period:'Matin'},
+  {id:'mac2', name:'Macro 2', period:'Matin'},
+  {id:'foeto', name:'Fœto', period:'Matin', only:[0,2,4]},
+  {id:'recA', name:'Réception', period:'Après-midi'},
+  {id:'sout', name:'Soutien', period:'Fin de journée'},
+];
+const POST_LABEL = {recM:'réception matin',mac1:'Macro 1',mac2:'Macro 2',foeto:'Fœto',recA:'réception après-midi',sout:'soutien',sam:'samedi matin'};
+const MAIN_POSTS = ['recM','mac1','mac2','foeto','recA'];
+/* Exclusion temporaire : retirer un nom de cette liste le remet en Fœto. */
+const NO_FOETO = ['MAJ'];
+const canPost = (x,post) => !(post==='foeto' && NO_FOETO.includes(x));
+/* Une indispo vaut true (journée), 'matin' ou 'aprem'. Le soutien compte comme un poste d'après-midi. */
+const POST_PART = {recM:'matin',mac1:'matin',mac2:'matin',foeto:'matin',sam:'matin',recA:'aprem',sout:'aprem'};
+const PART_LABEL = {matin:'le matin',aprem:"l'après-midi"};
+function offFor(indispos,x,d,post){
+  const v = indispos[x] && indispos[x][d];
+  return v===true || v===POST_PART[post];
+}
+function nextOff(cur,mode){
+  const m = cur===true || cur==='matin', a = cur===true || cur==='aprem';
+  let nm = m, na = a;
+  if(mode==='jour') nm = na = !(m && a);
+  else if(mode==='matin') nm = !m;
+  else na = !a;
+  return nm && na ? true : nm ? 'matin' : na ? 'aprem' : false;
+}
+const DAY_SHORT = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+
+const pad = n => String(n).padStart(2,'0');
+const toDate = s => { const [y,m,d] = s.split('-').map(Number); return new Date(Date.UTC(y,m-1,d)); };
+const ymd = d => d.toISOString().slice(0,10);
+const addDays = (s,n) => { const d = toDate(s); d.setUTCDate(d.getUTCDate()+n); return ymd(d); };
+const weekday = s => (toDate(s).getUTCDay()+6)%7; // 0 = lundi
+const mondayOf = s => addDays(s,-weekday(s));
+const weekDates = m => [0,1,2,3,4,5].map(i => addDays(m,i));
+function isoWeek(s){
+  const t = toDate(addDays(s,3-weekday(s)));
+  const y = t.getUTCFullYear();
+  return {week:1+Math.floor((t-Date.UTC(y,0,1))/(7*864e5)), year:y};
+}
+function easter(y){
+  const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),
+    h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),
+    t=h+l-7*m+114;
+  return `${y}-${pad(Math.floor(t/31))}-${pad(t%31+1)}`;
+}
+const holidayCache = {};
+function holidays(y){
+  if(holidayCache[y]) return holidayCache[y];
+  const e = easter(y);
+  return holidayCache[y] = {
+    [`${y}-01-01`]:"Jour de l'an", [addDays(e,1)]:'Lundi de Pâques', [`${y}-05-01`]:'1er mai', [`${y}-05-08`]:'8 mai',
+    [addDays(e,39)]:'Ascension', [addDays(e,50)]:'Lundi de Pentecôte', [`${y}-07-14`]:'14 juillet', [`${y}-08-15`]:'Assomption',
+    [`${y}-11-01`]:'Toussaint', [`${y}-11-11`]:'11 novembre', [`${y}-12-25`]:'Noël',
+  };
+}
+const holidayName = s => holidays(+s.slice(0,4))[s] || '';
+const isClosed = (wk,d) => { const c = wk && wk.closed && wk.closed[d]; return typeof c === 'boolean' ? c : !!holidayName(d); };
+const cellOf = (wk,d,p) => (wk && wk.days && wk.days[d] && wk.days[d][p]) || '';
+
+/* Liste des postes réels d'une semaine (jours fermés et fœto hors jour exclus). */
+function slotsOf(wk,monday){
+  const out = [];
+  weekDates(monday).forEach((d,i) => {
+    if(isClosed(wk,d)) return;
+    if(i===5){ out.push({date:d,post:'sam'}); return; }
+    POSTS.forEach(p => { if(!p.only || p.only.includes(i)) out.push({date:d,post:p.id}); });
+  });
+  return out;
+}
+function assignments(wk,monday){
+  return slotsOf(wk,monday).map(s => ({...s,who:cellOf(wk,s.date,s.post)})).filter(a => a.who);
+}
+const dayLabel = d => `${DAY_SHORT[weekday(d)]}. ${+d.slice(8)}`;
+
+/* Contrôle des règles sur une semaine saisie. */
+function checkWeek(wk,monday,indispos){
+  const issues = [], bad = new Set(), warn = new Set();
+  const slots = slotsOf(wk,monday);
+  const list = assignments(wk,monday);
+  const flag = (set,a) => set.add(a.date+'|'+a.post);
+  list.forEach(a => {
+    if(offFor(indispos,a.who,a.date,a.post)){
+      flag(bad,a);
+      const v = indispos[a.who][a.date];
+      issues.push({kind:'e',text:`${dayLabel(a.date)} : ${a.who} est indispo${v===true?'':' '+PART_LABEL[v]} mais posté sur ${POST_LABEL[a.post]}.`});
+    }
+    if(!canPost(a.who,a.post)){
+      flag(bad,a);
+      issues.push({kind:'e',text:`${dayLabel(a.date)} : ${a.who} n'est pas en Fœto pour le moment.`});
+    }
+  });
+  INTERNS.forEach(x => {
+    const mine = list.filter(a => a.post==='sout' && a.who===x);
+    if(mine.length>1){
+      mine.forEach(a => flag(bad,a));
+      issues.push({kind:'e',text:`${x} a ${mine.length} soutiens cette semaine (${mine.map(a=>dayLabel(a.date)).join(', ')}). Maximum : un par semaine.`});
+    }
+  });
+  const dates = weekDates(monday);
+  dates.slice(0,5).forEach(d => {
+    const main = list.filter(a => a.date===d && a.post!=='sout');
+    INTERNS.forEach(x => {
+      const mine = main.filter(a => a.who===x);
+      if(mine.length>1){
+        mine.forEach(a => flag(bad,a));
+        issues.push({kind:'e',text:`${dayLabel(d)} : ${x} a deux postes (${mine.map(a=>POST_LABEL[a.post]).join(' et ')}).`});
+      }
+    });
+    const ra = list.find(a => a.date===d && a.post==='recA');
+    const so = list.find(a => a.date===d && a.post==='sout');
+    if(ra && so && ra.who===so.who){
+      flag(bad,ra); flag(bad,so);
+      issues.push({kind:'e',text:`${dayLabel(d)} : ${so.who} ne peut pas cumuler soutien et réception après-midi.`});
+    }
+  });
+  const [fri,sat] = [dates[4],dates[5]];
+  const so = list.find(a => a.date===fri && a.post==='sout');
+  const sa = list.find(a => a.date===sat && a.post==='sam');
+  if(so && sa && so.who!==sa.who){
+    flag(warn,so); flag(warn,sa);
+    issues.push({kind:'w',text:`Samedi : ${sa.who} est posté alors que ${so.who} fait le soutien du vendredi.`});
+  }
+  return {issues,bad,warn,total:slots.length,filled:list.length,empty:slots.length-list.length};
+}
+
+function blankLoad(){ return {recA:0,recM:0,mac:0,foeto:0,sout:0,sam:0,all:0,w:{recA:0,recM:0,mac:0,foeto:0,sout:0,total:0}}; }
+const LOAD_KEY = {recA:'recA',recM:'recM',mac1:'mac',mac2:'mac',foeto:'foeto',sout:'sout',sam:'sam'};
+function tally(L,post,thisWeek){
+  const k = LOAD_KEY[post];
+  L[k]++; L.all++;
+  if(thisWeek){ L.w.total++; if(k in L.w) L.w[k]++; }
+}
+function postCost(L,post,noise){
+  const k = LOAD_KEY[post];
+  const weight = {recA:14,sout:8,foeto:6,recM:5,mac:3}[k];
+  return L.w.total*4 + (L[k]+(L.w[k]||0))*weight + noise;
+}
+
+/* Note d'équilibre d'une semaine complétée : plus elle est basse, plus la répartition est égale. */
+const spread = v => {
+  const mean = v.reduce((a,b) => a+b,0)/v.length;
+  return v.reduce((a,b) => a+(b-mean)**2,0) + (Math.max(...v)-Math.min(...v))**2;
+};
+function balanceScore(load){
+  const col = (f,who=INTERNS) => who.map(x => f(load[x]));
+  const foetoTeam = INTERNS.filter(x => canPost(x,'foeto'));
+  return 100*spread(col(L => L.recA)) + 40*spread(col(L => L.w.recA))
+    + 30*spread(col(L => L.sout)) + 30*spread(col(L => L.sam))
+    + 20*spread(col(L => L.foeto,foetoTeam)) + 20*spread(col(L => L.recM)) + 12*spread(col(L => L.mac))
+    + 15*spread(col(L => L.all)) + 15*spread(col(L => L.w.total));
+}
+
+/* Si l'effectif manque, la réception reste couverte en priorité. Macro 2 reste vide en premier. */
+const MISS = {recM:3000,recA:3000,sout:2500,sam:2500,foeto:2000,mac1:1500,mac2:1000};
+
+/* Un essai de remplissage, jour par jour, dans un ordre tiré au sort. */
+function fillOnce(work,monday,off,load,rng,amp){
+  const patch = {};
+  const put = (d,p,x) => {
+    (work.days[d] = work.days[d] || {})[p] = x;
+    (patch[d] = patch[d] || {})[p] = x;
+    tally(load[x],p,true);
+  };
+  const soutienFree = x => load[x].w.sout===0;
+  const dates = weekDates(monday), fri = dates[4], sat = dates[5];
+  const friOpen = !isClosed(work,fri), satOpen = !isClosed(work,sat);
+
+  if(satOpen){
+    const curSat = cellOf(work,sat,'sam'), curSout = friOpen ? cellOf(work,fri,'sout') : '';
+    const friRA = friOpen ? cellOf(work,fri,'recA') : '';
+    if(!curSat && curSout && !off(curSout,sat,'sam')) put(sat,'sam',curSout);
+    else if(curSat && !curSout && friOpen && !off(curSat,fri,'sout') && friRA!==curSat && soutienFree(curSat)) put(fri,'sout',curSat);
+    else if(!curSat){
+      const both = INTERNS.filter(x => !off(x,sat,'sam') && (!friOpen || curSout || (!off(x,fri,'sout') && x!==friRA && soutienFree(x))));
+      const pool = both.length ? both : INTERNS.filter(x => !off(x,sat,'sam'));
+      let best = '', score = Infinity;
+      pool.forEach(x => {
+        const s = load[x].sam*10 + load[x].sout*4 + rng()*amp*4;
+        if(s<score){ score = s; best = x; }
+      });
+      if(best){
+        put(sat,'sam',best);
+        if(friOpen && !curSout && both.includes(best)) put(fri,'sout',best);
+      }
+    }
+  }
+
+  const order = [0,1,2,3,4];
+  for(let i=4;i>0;i--){ const j = Math.floor(rng()*(i+1)); [order[i],order[j]] = [order[j],order[i]]; }
+  order.forEach(i => {
+    const d = dates[i];
+    if(isClosed(work,d)) return;
+    const main = POSTS.filter(p => (!p.only||p.only.includes(i)) && p.id!=='sout').map(p => p.id);
+    const free = main.filter(p => !cellOf(work,d,p));
+    const used = new Set(main.map(p => cellOf(work,d,p)).filter(Boolean));
+    const raFixed = cellOf(work,d,'recA'), soFixed = cellOf(work,d,'sout');
+    const noise = {};
+    INTERNS.forEach(x => { noise[x] = {}; POSTS.forEach(p => { noise[x][p.id] = rng()*amp; }); });
+    const costOf = (x,p) => postCost(load[x],p,noise[x][p]);
+    let best = {cost:Infinity,pick:{}};
+    const pickNow = {};
+    const walk = (k,cost) => {
+      if(cost>=best.cost) return;
+      if(k===free.length){
+        const ra = pickNow.recA || raFixed;
+        if(soFixed){ best = {cost,pick:{...pickNow}}; return; }
+        let any = false;
+        INTERNS.forEach(x => {
+          if(x===ra || !soutienFree(x) || off(x,d,'sout')) return;
+          any = true;
+          const c = cost+costOf(x,'sout');
+          if(c<best.cost) best = {cost:c,pick:{...pickNow,sout:x}};
+        });
+        if(!any && cost+MISS.sout<best.cost) best = {cost:cost+MISS.sout,pick:{...pickNow}};
+        return;
+      }
+      const p = free[k];
+      INTERNS.forEach(x => {
+        if(used.has(x) || !canPost(x,p) || off(x,d,p)) return;
+        if(p==='recA' && x===soFixed) return;
+        used.add(x); pickNow[p] = x;
+        walk(k+1,cost+costOf(x,p));
+        used.delete(x); delete pickNow[p];
+      });
+      walk(k+1,cost+MISS[p]);
+    };
+    walk(0,0);
+    Object.entries(best.pick).forEach(([p,x]) => put(d,p,x));
+  });
+  return patch;
+}
+
+/* Complète les cases vides d'une semaine sans toucher aux cases remplies.
+   Plusieurs essais sont comparés : d'abord le moins de postes vides, puis le meilleur équilibre. */
+function propose(week,monday,indispos,allWeeks,rng=Math.random,tries=200){
+  const start = JSON.parse(JSON.stringify(week||{}));
+  start.days = start.days || {};
+  const off = (x,d,post) => offFor(indispos,x,d,post);
+  const load0 = Object.fromEntries(INTERNS.map(x => [x,blankLoad()]));
+  Object.keys(allWeeks).forEach(id => {
+    if(id===monday) return;
+    assignments(allWeeks[id],id).forEach(a => tally(load0[a.who],a.post,false));
+  });
+  assignments(start,monday).forEach(a => tally(load0[a.who],a.post,true));
+  let best = null;
+  for(let t=0;t<tries;t++){
+    const work = JSON.parse(JSON.stringify(start));
+    const load = JSON.parse(JSON.stringify(load0));
+    const patch = fillOnce(work,monday,off,load,rng,1+(t%5)*1.5);
+    const missing = slotsOf(work,monday).filter(s => !cellOf(work,s.date,s.post)).reduce((n,s) => n+MISS[s.post],0);
+    const score = missing*100 + balanceScore(load);
+    if(!best || score<best.score) best = {score,patch};
+  }
+  return best.patch;
+}
+
+/* Compteur : uniquement les réceptions de l'après-midi. */
+function countAll(weeks){
+  const out = Object.fromEntries(INTERNS.map(x => [x,{recA:0,byWeek:{}}]));
+  Object.keys(weeks).forEach(id => {
+    assignments(weeks[id],id).forEach(a => {
+      if(a.post!=='recA') return;
+      out[a.who].recA++;
+      out[a.who].byWeek[id] = (out[a.who].byWeek[id]||0)+1;
+    });
+  });
+  return out;
+}
+/*CORE-END*/
+
+/* ---------- Application ---------- */
+const $ = id => document.getElementById(id);
+const plural = (n,one,many) => `${n} ${n>1?many:one}`;
+const MONTHS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const MONTHS_SHORT = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+const now = new Date();
+const TODAY = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+const THIS_MON = mondayOf(TODAY);
+
+const state = {
+  weeks:{}, indispos:{}, month:mondayOfNext().slice(0,7), open:{}, hl:null, ready:false,
+  db:null, offline:false, readOnly:false, slow:false, confirmClear:null, offMode:'jour',
+};
+function mondayOfNext(){ return addDays(THIS_MON,7); }
+let pending = 0, pendingRender = false, snapWeeks = {}, snapOff = {};
+
+/* Les données de la base sont nettoyées : seuls les internes et postes connus passent. */
+const isYmd = s => /^\d{4}-\d{2}-\d{2}$/.test(s);
+function cleanWeek(id,raw){
+  const days = {}, closed = {};
+  const rd = (raw && raw.days) || {};
+  Object.keys(rd).forEach(d => {
+    if(!isYmd(d)) return;
+    days[d] = {};
+    [...MAIN_POSTS,'sout','sam'].forEach(p => {
+      const v = rd[d] && rd[d][p];
+      if(INTERNS.includes(v)) days[d][p] = v;
+    });
+  });
+  const rc = (raw && raw.closed) || {};
+  Object.keys(rc).forEach(d => { if(isYmd(d) && typeof rc[d]==='boolean') closed[d] = rc[d]; });
+  return {monday:id,days,closed};
+}
+function cleanOff(raw){
+  const out = {}, r = (raw && raw.dates) || {};
+  Object.keys(r).forEach(d => { if(isYmd(d) && [true,'matin','aprem'].includes(r[d])) out[d] = r[d]; });
+  return out;
+}
+function ensureWeek(id){ return state.weeks[id] || (state.weeks[id] = {monday:id,days:{},closed:{}}); }
+
+/* ---------- Écritures ---------- */
+/* Le SDK Firestore garde l'ordre des écritures et les renvoie seul après une coupure réseau. */
+function save(path,patch,full,opts={}){
+  if(!state.db) return;
+  const ref = state.db.doc(path);
+  pending++; paintSync();
+  (opts.replace ? ref.set(JSON.parse(JSON.stringify(full))) : ref.update(patch))
+    .catch(onWriteError)
+    .finally(() => { pending--; paintSync(); });
+}
+function onWriteError(err){
+  const code = err && err.code;
+  if(code==='permission-denied'){
+    state.readOnly = true;
+    toast("Modification refusée par Firebase : vérifie les règles de sécurité.");
+  }else if(code==='quota_exceeded'){
+    toast("La base est pleine : la modification n'a pas été enregistrée.");
+  }else{
+    toast("Modification non enregistrée. Vérifie ta connexion et recommence.");
+  }
+  state.weeks = JSON.parse(JSON.stringify(snapWeeks));
+  state.indispos = JSON.parse(JSON.stringify(snapOff));
+  render();
+}
+
+function setCell(w,d,p,who){
+  const wk = ensureWeek(w);
+  (wk.days[d] = wk.days[d] || {})[p] = who;
+  save('weeks/'+w,{days:{[d]:{[p]:who}}},wk);
+  render();
+}
+function toggleOff(x,d){
+  const cur = state.indispos[x] || (state.indispos[x] = {});
+  const next = nextOff(cur[d],state.offMode);
+  if(next) cur[d] = next; else delete cur[d];
+  save('indispos/'+x,{dates:{[d]:next}},{dates:cur});
+  render();
+}
+function runPropose(w){
+  const wk = ensureWeek(w);
+  const patch = propose(wk,w,state.indispos,state.weeks);
+  const n = Object.values(patch).reduce((s,o) => s+Object.keys(o).length,0);
+  if(!n){ toast('Aucune case à compléter.'); return; }
+  Object.entries(patch).forEach(([d,o]) => { wk.days[d] = {...(wk.days[d]||{}),...o}; });
+  save('weeks/'+w,{days:patch},wk);
+  const left = checkWeek(wk,w,state.indispos).empty;
+  toast(left ? `${plural(n,'poste proposé','postes proposés')}. ${plural(left,'poste reste vide','postes restent vides')} : pas assez d'internes disponibles.` : `${plural(n,'poste proposé','postes proposés')}. Tout reste modifiable.`);
+  render();
+}
+function runClear(w){
+  if(state.confirmClear!==w){
+    state.confirmClear = w; render();
+    setTimeout(() => { if(state.confirmClear===w){ state.confirmClear = null; render(); } },4000);
+    return;
+  }
+  state.confirmClear = null;
+  const wk = ensureWeek(w);
+  wk.days = {};
+  save('weeks/'+w,null,wk,{replace:true});
+  toast('Semaine vidée.');
+  render();
+}
+function toggleDayOpen(w,d){
+  const wk = ensureWeek(w);
+  const next = !isClosed(wk,d);
+  wk.closed[d] = next;
+  save('weeks/'+w,{closed:{[d]:next}},wk);
+  render();
+}
+function addWeek(){
+  const list = visibleWeeks();
+  const id = addDays(list[list.length-1],7);
+  const wk = ensureWeek(id);
+  save('weeks/'+id,{},wk);
+  render();
+}
+
+/* ---------- Affichage ---------- */
+function visibleWeeks(){
+  const ids = Object.keys(state.weeks).sort();
+  const next = addDays(THIS_MON,7);
+  let from = ids[0] && ids[0]<THIS_MON ? ids[0] : THIS_MON;
+  const to = ids.length && ids[ids.length-1]>next ? ids[ids.length-1] : next;
+  const out = [];
+  while(from<=to){ out.push(from); from = addDays(from,7); }
+  return out;
+}
+const locked = () => !state.ready || state.readOnly;
+function rangeLabel(m){
+  const s = m, e = addDays(m,5);
+  const [sd,sm,ed,em] = [+s.slice(8),+s.slice(5,7)-1,+e.slice(8),+e.slice(5,7)-1];
+  return sm===em ? `${sd} – ${ed} ${MONTHS[em]}` : `${sd} ${MONTHS_SHORT[sm]} – ${ed} ${MONTHS_SHORT[em]}`;
+}
+function relLabel(id){
+  if(id===THIS_MON) return 'Cette semaine';
+  if(id===addDays(THIS_MON,7)) return 'Semaine prochaine';
+  if(id===addDays(THIS_MON,-7)) return 'Semaine dernière';
+  return '';
+}
+function optionsFor(wk,date,post,value,friSout){
+  const day = (wk.days && wk.days[date]) || {};
+  const opts = [`<option value=""${value?'':' selected'}>—</option>`];
+  INTERNS.forEach(x => {
+    let note = '';
+    if(x!==value){
+      const otherSout = post==='sout' && weekDates(mondayOf(date)).slice(0,5).some(d => d!==date && !isClosed(wk,d) && cellOf(wk,d,'sout')===x);
+      if(offFor(state.indispos,x,date,post)) note = 'indispo';
+      else if(!canPost(x,post)) note = 'pas de Fœto';
+      else if(post==='sout'){
+        if(otherSout) note = 'déjà un soutien cette semaine';
+        else if(day.recA===x) note = 'en réception après-midi';
+      }
+      else if(post==='sam'){ if(friSout===x) note = 'soutien vendredi'; }
+      else{
+        const other = MAIN_POSTS.find(p => p!==post && day[p]===x);
+        if(other) note = 'déjà sur '+POST_LABEL[other];
+        else if(post==='recA' && day.sout===x) note = 'au soutien';
+      }
+    }
+    opts.push(`<option value="${x}"${x===value?' selected':''}>${x}${note?' · '+note:''}</option>`);
+  });
+  return opts.join('');
+}
+function pickHtml(w,wk,date,post,chk,friSout){
+  const v = cellOf(wk,date,post);
+  const key = date+'|'+post;
+  const cls = chk.bad.has(key) ? ' bad' : chk.warn.has(key) ? ' warn' : '';
+  const style = v ? ` style="--c:var(--${v})"` : '';
+  const on = v && v===state.hl ? ' on' : '';
+  return `<div class="cell${cls}"><select class="pick${v?'':' empty'}${on}" id="c-${date}-${post}" data-w="${w}" data-d="${date}" data-p="${post}" data-i="${v}"${style} aria-label="${POST_LABEL[post]}, ${dayLabel(date)}"${locked()?' disabled':''}>${optionsFor(wk,date,post,v,friSout)}</select></div>`;
+}
+function headCell(w,wk,d){
+  const i = weekday(d), hol = holidayName(d);
+  const today = d===TODAY ? ' is-today' : '';
+  let tag = '';
+  if(hol){
+    const closed = isClosed(wk,d);
+    tag = `<span class="ferie-tag">Férié · <button id="o-${d}" data-act="day-open" data-w="${w}" data-d="${d}"${locked()?' disabled':''}>${closed?'ouvrir':'fermer'}</button></span>`;
+  }
+  return `<th scope="col" class="${today.trim()}">${DAY_SHORT[i]} <span class="dnum">${+d.slice(8)}</span>${tag}</th>`;
+}
+function weekHtml(id){
+  const wk = state.weeks[id] || {monday:id,days:{},closed:{}};
+  const dates = weekDates(id);
+  const chk = checkWeek(wk,id,state.indispos);
+  const errs = chk.issues.filter(x => x.kind==='e').length;
+  const warns = chk.issues.length-errs;
+  const prevMon = addDays(THIS_MON,-7);
+  const isOpen = id in state.open ? state.open[id] : id>=prevMon;
+  const rel = relLabel(id);
+  const pills = [];
+  if(errs) pills.push(`<span class="pill err">${plural(errs,'conflit','conflits')}</span>`);
+  if(warns) pills.push(`<span class="pill warn">${warns} à vérifier</span>`);
+  if(chk.empty) pills.push(`<span class="pill">${plural(chk.empty,'poste à remplir','postes à remplir')}</span>`);
+  if(!errs && !warns && !chk.empty) pills.push(`<span class="pill ok">Complet</span>`);
+
+  let body = '';
+  if(isOpen){
+    const friSout = isClosed(wk,dates[4]) ? '' : cellOf(wk,dates[4],'sout');
+    const sat = dates[5];
+    const satClosed = isClosed(wk,sat);
+    const rows = POSTS.map((p,r) => {
+      const cells = dates.slice(0,5).map((d,i) => {
+        if(isClosed(wk,d)) return r===0 ? `<td rowspan="${POSTS.length}" class="closed"><span>${holidayName(d)||'Fermé'}</span></td>` : '';
+        if(p.only && !p.only.includes(i)) return `<td class="no-post" aria-label="Pas de poste"></td>`;
+        return `<td>${pickHtml(id,wk,d,p.id,chk,friSout)}</td>`;
+      }).join('');
+      let satCell = '';
+      if(r===0){
+        if(satClosed) satCell = `<td rowspan="${POSTS.length}" class="closed sat"><span>${holidayName(sat)||'Fermé'}</span></td>`;
+        else{
+          const v = cellOf(wk,sat,'sam');
+          const mismatch = v && friSout && v!==friSout;
+          const hint = mismatch ? `<span class="sat-hint warn">Soutien vendredi : ${friSout}</span>` : `<span class="sat-hint">Suit le soutien du vendredi</span>`;
+          satCell = `<td rowspan="${POSTS.length}" class="sat"><div class="sat-box"><span class="sat-title">Samedi matin</span>${pickHtml(id,wk,sat,'sam',chk,friSout)}${hint}</div></td>`;
+        }
+      }
+      const brk = p.id==='recA' ? ' class="break"' : '';
+      return `<tr${brk}><th scope="row">${p.name}<small>${p.period}</small></th>${cells}${satCell}</tr>`;
+    }).join('');
+    const offRow = dates.map(d => {
+      const who = INTERNS.filter(x => state.indispos[x] && state.indispos[x][d]).map(x => {
+        const v = state.indispos[x][d];
+        return `<span>${x}${v===true?'':' '+(v==='matin'?'matin':'aprem')}</span>`;
+      });
+      return `<td>${who.join('')}</td>`;
+    }).join('');
+    const issues = chk.issues.length ? `<ul class="issues">${chk.issues.map(x => `<li class="${x.kind}"><b>${x.kind==='e'?'Conflit':'À vérifier'}</b><span>${x.text}</span></li>`).join('')}</ul>` : '';
+    body = `<div class="grid-scroll"><table class="grid">
+      <colgroup><col class="post-col">${dates.map(() => '<col>').join('')}</colgroup>
+      <thead><tr><th class="corner" scope="col">Poste</th>${dates.map(d => headCell(id,wk,d)).join('')}</tr></thead>
+      <tbody>${rows}<tr class="offrow"><th scope="row">Indispos</th>${offRow}</tr></tbody>
+    </table></div>${issues}`;
+  }
+  const iw = isoWeek(id);
+  const confirm = state.confirmClear===id;
+  const actions = isOpen ? `<div class="week-actions">
+      <button class="btn${confirm?' danger':''}" id="x-${id}" data-act="clear" data-w="${id}"${locked()?' disabled':''}>${confirm?'Confirmer : tout vider':'Vider'}</button>
+      <button class="btn primary" id="p-${id}" data-act="propose" data-w="${id}"${locked()?' disabled':''}>Proposer la semaine</button>
+    </div>` : '';
+  return `<section class="week${id===THIS_MON?' now':''}${isOpen?' is-open':''}" id="w-${id}">
+    <div class="week-head">
+      <button class="week-id" id="t-${id}" data-act="fold" data-w="${id}" aria-expanded="${isOpen}">
+        <span class="chev" aria-hidden="true">›</span>
+        <span class="label">S${pad(iw.week)}-${iw.year}</span>
+        <span class="dates">${rangeLabel(id)}</span>
+        ${rel?`<span class="rel">${rel}</span>`:''}
+      </button>
+      <div class="pills">${pills.join('')}</div>
+      ${actions}
+    </div>${body}</section>`;
+}
+function renderCalendars(){
+  const [y,m] = state.month.split('-').map(Number);
+  $('month-label').textContent = `${MONTHS[m-1][0].toUpperCase()}${MONTHS[m-1].slice(1)} ${y}`;
+  const first = `${y}-${pad(m)}-01`;
+  const last = ymd(new Date(Date.UTC(y,m,0)));
+  const days = [];
+  for(let d=first; d<=last; d=addDays(d,1)) days.push(d);
+  const lead = weekday(first);
+  $('cals').innerHTML = INTERNS.map(x => {
+    const off = state.indispos[x] || {};
+    const n = days.reduce((sum,d) => sum+(off[d]===true?1:off[d]?.5:0),0);
+    const head = ['L','M','M','J','V','S','D'].map(l => `<span class="cal-dow" aria-hidden="true">${l}</span>`).join('');
+    const blanks = Array(lead).fill('<span></span>').join('');
+    const cells = days.map(d => {
+      const sun = weekday(d)===6, hol = holidayName(d);
+      const cls = ['day',hol?'ferie':'',d===TODAY?'today':''].filter(Boolean).join(' ');
+      const dis = sun || locked();
+      const v = off[d];
+      const pressed = v===true ? 'true' : v ? 'mixed' : 'false';
+      const part = v && v!==true ? ` data-part="${v}"` : '';
+      const state_ = v===true ? ', indispo toute la journée' : v ? `, indispo ${PART_LABEL[v]}` : '';
+      const tip = [hol, v===true ? 'Indispo toute la journée' : v ? `Indispo ${PART_LABEL[v]}` : ''].filter(Boolean).join(' · ');
+      return `<button class="${cls}" id="cal-${x}-${d}" data-act="off" data-i="${x}" data-d="${d}" aria-pressed="${pressed}"${part} aria-label="${x}, ${+d.slice(8)} ${MONTHS[m-1]}${hol?', '+hol:''}${state_}"${tip?` title="${tip}"`:''}${dis?' disabled':''}>${+d.slice(8)}</button>`;
+    }).join('');
+    return `<div class="cal" style="--c:var(--${x})">
+      <div class="cal-head"><span class="code">${x}</span><span class="cal-count">${n ? `${String(n).replace('.',',')} ${n>=2?'jours':'jour'}` : ''}</span></div>
+      <div class="cal-grid">${head}${blanks}${cells}</div>
+    </div>`;
+  }).join('');
+}
+function renderCounter(){
+  const c = countAll(state.weeks);
+  const all = visibleWeeks();
+  const recent = all.slice(-8);
+  const totals = INTERNS.map(x => c[x].recA);
+  const max = Math.max(...totals,1);
+  const head = recent.map(id => `<th scope="col"><span class="wk">S${pad(isoWeek(id).week)}</span></th>`).join('');
+  const rows = INTERNS.map((x,i) => {
+    const r = c[x];
+    const wk = recent.map(id => { const v = r.byWeek[id]||0; return `<td><span class="wk${v?' has':''}">${v||'·'}</span></td>`; }).join('');
+    return `<tr style="--c:var(--${x})"><th scope="row"><span class="code">${x}</span></th>
+      <td class="main"><div class="bar-row"><strong>${totals[i]}</strong><div class="bar"><i style="width:${totals[i]/max*100}%"></i></div></div></td>${wk}</tr>`;
+  }).join('');
+  $('count').innerHTML = `<table class="count"><thead><tr><th scope="col">Interne</th><th scope="col" class="main">Réceptions après-midi</th>${head}</tr></thead><tbody>${rows}</tbody></table>`;
+  const hi = Math.max(...totals), lo = Math.min(...totals);
+  if(hi===0) $('gap').textContent = "Le compteur se remplit dès qu'une semaine est saisie.";
+  else{
+    const who = INTERNS.filter((x,i) => totals[i]===lo).join(', ');
+    $('gap').innerHTML = hi===lo ? 'Répartition égale entre les six internes.' : `Écart de <b>${hi-lo}</b> entre le plus et le moins posté. Le moins posté : <b>${who}</b>.`;
+  }
+}
+function renderLead(){
+  const next = addDays(THIS_MON,7);
+  const chk = checkWeek(state.weeks[next]||{},next,state.indispos);
+  const errs = chk.issues.filter(x => x.kind==='e').length;
+  const lbl = `Semaine ${isoWeek(next).week}`;
+  $('lead').textContent = !state.ready ? 'Chargement du planning…'
+    : errs ? `${lbl} : ${plural(errs,'conflit','conflits')} à régler.`
+    : chk.empty ? `${lbl} : ${plural(chk.empty,'poste à remplir','postes à remplir')} sur ${chk.total}.`
+    : `${lbl} complète.`;
+}
+function paintSync(){
+  const s = $('sync');
+  let t = 'Enregistré', k = 'ok';
+  if(state.offline){ t = 'Non connecté à la base'; k = 'bad'; }
+  else if(state.readOnly){ t = 'Lecture seule'; k = 'wait'; }
+  else if(!state.ready){ t = state.slow ? 'La base ne répond pas' : 'Connexion…'; k = state.slow ? 'bad' : 'wait'; }
+  else if(pending){ t = 'Enregistrement…'; k = 'busy'; }
+  s.textContent = t; s.dataset.s = k;
+  const n = $('notice');
+  const msg = state.offline ? "Firebase n'est pas configuré : tes modifications disparaîtront à la fermeture de la page."
+    : state.denied ? "Firebase refuse l'accès au planning. Vérifie les règles de sécurité de Firestore."
+    : state.slow && !state.ready ? "La base ne répond pas encore. Le planning s'affichera dès qu'elle sera joignable." : '';
+  n.hidden = !msg; n.textContent = msg;
+}
+function render(){
+  const active = document.activeElement && document.activeElement.id;
+  renderCalendars();
+  $('weeks').innerHTML = visibleWeeks().map(weekHtml).join('');
+  renderCounter();
+  renderLead();
+  paintSync();
+  $('add-week').disabled = locked();
+  document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed',String(b.dataset.m===state.offMode)));
+  document.querySelectorAll('.legend .code').forEach(b => b.setAttribute('aria-pressed',String(b.dataset.i===state.hl)));
+  $('main').classList.toggle('hl',!!state.hl);
+  if(active){ const el = $(active); if(el) el.focus({preventScroll:true}); }
+}
+/* Un menu ouvert ne doit pas se refermer quand un autre poste arrive en direct. */
+function softRender(){
+  if(document.activeElement && document.activeElement.tagName==='SELECT'){ pendingRender = true; return; }
+  render();
+}
+let toastTimer;
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; },4200);
+}
+
+/* ---------- Événements ---------- */
+$('legend').innerHTML = INTERNS.map(x => `<button class="code" style="--c:var(--${x})" data-act="hl" data-i="${x}" aria-pressed="false">${x}</button>`).join('')+'<small>Clique sur un interne pour surligner ses postes.</small>';
+
+document.addEventListener('change',e => {
+  const t = e.target;
+  if(t.matches && t.matches('select.pick')) setCell(t.dataset.w,t.dataset.d,t.dataset.p,t.value);
+});
+document.addEventListener('focusout',e => {
+  if(e.target.tagName==='SELECT' && pendingRender){ pendingRender = false; setTimeout(render,0); }
+});
+document.addEventListener('click',e => {
+  const b = e.target.closest && e.target.closest('[data-act]');
+  if(!b || b.disabled) return;
+  const {act,w,d,i,n} = b.dataset;
+  if(act==='month'){
+    const [y,m] = state.month.split('-').map(Number);
+    const t = new Date(Date.UTC(y,m-1+Number(n),1));
+    state.month = ymd(t).slice(0,7);
+    render();
+  }
+  else if(act==='off-mode'){ state.offMode = b.dataset.m; render(); }
+  else if(act==='off') toggleOff(i,d);
+  else if(act==='propose') runPropose(w);
+  else if(act==='clear') runClear(w);
+  else if(act==='day-open') toggleDayOpen(w,d);
+  else if(act==='add-week') addWeek();
+  else if(act==='fold'){ state.open[w] = b.getAttribute('aria-expanded')!=='true'; render(); }
+  else if(act==='hl'){ state.hl = state.hl===i ? null : i; render(); }
+});
+
+/* ---------- Base de données ---------- */
+/* Dans Firestore, update() remplace les objets imbriqués : set + merge conserve les autres cases. */
+function connectFirebase(){
+  if(!window.firebase || !FIREBASE_CONFIG.projectId) return null;
+  firebase.initializeApp(FIREBASE_CONFIG);
+  const fs = firebase.firestore();
+  return {
+    collection: path => fs.collection(path),
+    doc: path => {
+      const ref = fs.doc(path);
+      return {set: data => ref.set(data), update: data => ref.set(data,{merge:true})};
+    },
+  };
+}
+async function init(){
+  render();
+  let db = null;
+  try{ db = connectFirebase(); }catch(_){ db = null; }
+  if(!db){ state.offline = true; state.ready = true; render(); return; }
+  state.db = db;
+  let gotW = false, gotO = false, liveW = false, liveO = false;
+  const settle = () => {
+    if(gotW && gotO && liveW && liveO && !state.ready){ state.ready = true; state.slow = false; clearTimeout(timer); render(); }
+  };
+  const timer = setTimeout(() => {
+    if(gotW && gotO){ state.ready = true; render(); }
+    else{ state.slow = true; paintSync(); }
+  },10000);
+  const fail = err => {
+    clearTimeout(timer);
+    if(err && err.code==='permission-denied') state.denied = true;
+    state.slow = true;
+    render();
+  };
+  db.collection('weeks').onSnapshot(s => {
+    const map = {};
+    s.docs.forEach(doc => {
+      if(!isYmd(doc.id) || weekday(doc.id)!==0) return;
+      map[doc.id] = cleanWeek(doc.id,doc.data());
+    });
+    snapWeeks = map;
+    state.weeks = JSON.parse(JSON.stringify(map));
+    gotW = true; if(!s.metadata.fromCache) liveW = true;
+    settle(); softRender();
+  },fail);
+  db.collection('indispos').onSnapshot(s => {
+    const map = {};
+    s.docs.forEach(doc => {
+      if(!INTERNS.includes(doc.id)) return;
+      map[doc.id] = cleanOff(doc.data());
+    });
+    snapOff = map;
+    state.indispos = JSON.parse(JSON.stringify(map));
+    gotO = true; if(!s.metadata.fromCache) liveO = true;
+    settle(); softRender();
+  },fail);
+}
+init();
+</script>
+</body>
+</html>
