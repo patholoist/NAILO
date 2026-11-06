@@ -126,7 +126,7 @@ h2{font:600 22px/1.2 var(--font-display);letter-spacing:-.01em;margin:0}
 .pill.ok{background:var(--ok-bg);color:var(--ok)}
 .week-actions{margin-left:auto;display:flex;gap:6px}
 .grid-scroll{overflow-x:auto;border-top:1px solid var(--line)}
-table.grid{border-collapse:separate;border-spacing:0;width:100%;min-width:760px;table-layout:fixed}
+table.grid{border-collapse:separate;border-spacing:0;width:100%;min-width:640px;table-layout:fixed}
 .grid th,.grid td{padding:4px;border-bottom:1px solid var(--line);vertical-align:middle}
 .grid tbody tr:last-child>*{border-bottom:0}
 .grid thead th{font-weight:600;font-size:13px;text-align:center;padding:8px 4px;background:var(--surface)}
@@ -142,11 +142,36 @@ table.grid{border-collapse:separate;border-spacing:0;width:100%;min-width:760px;
 .no-post{background:var(--hatch)}
 .closed{background:var(--hatch);text-align:center;font-size:12.5px;color:var(--muted)}
 .closed span{background:var(--surface);padding:2px 6px;border-radius:3px}
-.sat{border-left:1px solid var(--line-strong);text-align:center;padding:8px!important}
-.sat-box{display:flex;flex-direction:column;gap:6px}
-.sat-title{font-size:12px;color:var(--muted);font-weight:600}
-.sat-hint{font-size:11.5px;color:var(--muted);line-height:1.25}
+.sat-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:10px 14px;border-top:1px solid var(--line);background:var(--bg)}
+.sat-lbl{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 220px}
+.sat-lbl b{font-size:14px}
+.sat-hint{font-size:12.5px;color:var(--muted);line-height:1.3}
 .sat-hint.warn{color:var(--warn);font-weight:600}
+.sat-hint button{background:none;border:0;padding:0;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline;font-size:12.5px}
+.sat-chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:baseline;gap:6px;border:1px solid color-mix(in oklab,var(--c) 40%,var(--surface));border-radius:4px;padding:7px 10px;cursor:pointer;
+  font:600 13.5px/1 var(--font-mono);letter-spacing:.05em;background:var(--surface);color:color-mix(in oklab,var(--c) 76%,var(--fg))}
+.chip small{font:500 11px/1 var(--font-body);letter-spacing:0;color:var(--muted)}
+.chip:hover:not(:disabled){background:color-mix(in oklab,var(--c) 14%,var(--surface))}
+.chip[aria-pressed="true"]{background:var(--c);border-color:var(--c);color:var(--on-c)}
+.chip[aria-pressed="true"] small{color:var(--on-c);opacity:.85}
+.chip:disabled{cursor:default}
+.chip.off{text-decoration:line-through;opacity:.45}
+.chip.bad{outline:2px solid var(--err);outline-offset:1px}
+.chip.warn{outline:2px solid var(--warn);outline-offset:1px}
+.sat-closed{font-size:13px;color:var(--muted)}
+.pill.frozen{background:var(--accent);color:var(--on-accent)}
+.week.is-frozen{border-color:var(--line-strong)}
+.week.is-frozen .grid-scroll{background:var(--hatch)}
+.wstats-wrap{border-top:1px solid var(--line);padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.wstats-wrap h3{margin:0;font:600 14px/1.2 var(--font-body)}
+.wstats-scroll{overflow-x:auto}
+table.wstats{border-collapse:collapse;width:100%;min-width:520px;font-variant-numeric:tabular-nums;font-size:13.5px}
+.wstats th,.wstats td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:center}
+.wstats th[scope="row"]{text-align:left;font-weight:500;color:var(--muted)}
+.wstats thead th{border-bottom:1px solid var(--line-strong)}
+.wstats td.zero{color:var(--muted);opacity:.6}
+.wstats tr.total>*{border-bottom:0;border-top:1px solid var(--line-strong);font-weight:700;color:var(--fg)}
 .cell{position:relative}
 .pick{appearance:none;-webkit-appearance:none;width:100%;height:36px;padding:0 4px;border-radius:4px;border:1px solid transparent;
   font:600 13.5px var(--font-mono);letter-spacing:.05em;text-align:center;text-align-last:center;cursor:pointer;
@@ -174,12 +199,13 @@ main.hl .pick:not(.on){opacity:.28}
 
 /* Compteur */
 .count-wrap{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
-table.count{border-collapse:collapse;width:100%;min-width:560px;font-variant-numeric:tabular-nums}
+table.count{border-collapse:collapse;width:100%;min-width:620px;font-variant-numeric:tabular-nums}
 .count th,.count td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:center}
 .count tbody tr:last-child>*{border-bottom:0}
 .count thead th{font-size:12.5px;font-weight:600;color:var(--muted);line-height:1.2;vertical-align:bottom}
 .count th[scope="row"],.count thead th:first-child{text-align:left}
-.count .main{width:42%;text-align:left}
+.count .main{width:36%;text-align:left}
+.count .sub{font-weight:500;color:var(--muted)}
 .bar-row{display:flex;align-items:center;gap:10px}
 .bar-row strong{font:800 20px/1 var(--font-display);min-width:26px}
 .bar{flex:1;height:8px;border-radius:2px;background:var(--sunken);overflow:hidden}
@@ -193,6 +219,7 @@ details.rules{background:var(--surface);border:1px solid var(--line);border-radi
 details.rules summary{cursor:pointer;font-weight:600}
 details.rules ul{margin:10px 0 2px;padding-left:18px;display:flex;flex-direction:column;gap:4px;max-width:72ch}
 
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;
   background:var(--fg);color:var(--bg);padding:9px 14px;border-radius:5px;font-weight:500;font-size:14px;max-width:calc(100vw - 32px)}
 
@@ -245,7 +272,7 @@ details.rules ul{margin:10px 0 2px;padding-left:18px;display:flex;flex-direction
     <div class="sec-head">
       <div>
         <h2 id="h-weeks">Semaines</h2>
-        <p>Une nouvelle semaine s'ajoute toute seule en bas chaque lundi. Les anciennes restent, repliées.</p>
+        <p>Une nouvelle semaine s'ajoute toute seule en bas chaque lundi. Choisis d'abord le samedi, puis clique sur « Proposer ». Fige la semaine quand elle est validée.</p>
       </div>
     </div>
     <div class="legend" id="legend"></div>
@@ -256,12 +283,14 @@ details.rules ul{margin:10px 0 2px;padding-left:18px;display:flex;flex-direction
       <ul>
         <li>Un interne n'a qu'un poste par jour. Le soutien est le seul poste qui peut s'ajouter à un autre.</li>
         <li>Le soutien ne peut pas être tenu par l'interne de réception de l'après-midi.</li>
-        <li>Le samedi matin revient en général à l'interne du soutien du vendredi. Un écart est signalé mais reste possible.</li>
+        <li>Le samedi matin se choisit à la main, au-dessus de chaque semaine. « Proposer » met alors cette personne en réception le vendredi après-midi si c'est possible, et pas au soutien.</li>
         <li>Soutien : un seul par semaine pour chaque interne.</li>
+        <li>Fœto : un seul par semaine pour chaque interne.</li>
         <li>Fœto : lundi, mercredi et vendredi uniquement. MAJ n'est pas posté en Fœto pour le moment.</li>
         <li>Indispo le matin : pas de poste du matin, ni le samedi matin. Indispo l'après-midi : pas de réception après-midi ni de soutien.</li>
         <li>Un interne indispo n'est jamais proposé. S'il est posté à la main, la case passe en alerte.</li>
         <li>« Proposer » complète seulement les cases vides. Il compare 200 combinaisons et garde la plus équilibrée, en commençant par la réception de l'après-midi, puis tous les autres postes. Tes saisies ne sont pas modifiées.</li>
+        <li>« Figer » verrouille une semaine : plus aucune case ne bouge, même avec « Proposer ». « Défiger » demande une confirmation.</li>
         <li>Les jours fériés sont fermés par défaut. Tu peux les rouvrir depuis l'en-tête du jour.</li>
       </ul>
     </details>
@@ -271,7 +300,7 @@ details.rules ul{margin:10px 0 2px;padding-left:18px;display:flex;flex-direction
     <div class="sec-head">
       <div>
         <h2 id="h-count">Compteur d'après-midi</h2>
-        <p>Réceptions de l'après-midi sur toutes les semaines du planning. Le soutien n'est pas compté.</p>
+        <p>Totaux sur toutes les semaines du planning. La barre suit les réceptions de l'après-midi.</p>
       </div>
     </div>
     <div class="count-wrap" id="count"></div>
@@ -397,6 +426,11 @@ function checkWeek(wk,monday,indispos){
       mine.forEach(a => flag(bad,a));
       issues.push({kind:'e',text:`${x} a ${mine.length} soutiens cette semaine (${mine.map(a=>dayLabel(a.date)).join(', ')}). Maximum : un par semaine.`});
     }
+    const fo = list.filter(a => a.post==='foeto' && a.who===x);
+    if(fo.length>1){
+      fo.forEach(a => flag(bad,a));
+      issues.push({kind:'e',text:`${x} a ${fo.length} Fœto cette semaine (${fo.map(a=>dayLabel(a.date)).join(', ')}). Maximum : un par semaine.`});
+    }
   });
   const dates = weekDates(monday);
   dates.slice(0,5).forEach(d => {
@@ -418,18 +452,19 @@ function checkWeek(wk,monday,indispos){
   const [fri,sat] = [dates[4],dates[5]];
   const so = list.find(a => a.date===fri && a.post==='sout');
   const sa = list.find(a => a.date===sat && a.post==='sam');
-  if(so && sa && so.who!==sa.who){
+  if(so && sa && so.who===sa.who){
     flag(warn,so); flag(warn,sa);
-    issues.push({kind:'w',text:`Samedi : ${sa.who} est posté alors que ${so.who} fait le soutien du vendredi.`});
+    issues.push({kind:'w',text:`Samedi : ${sa.who} fait aussi le soutien du vendredi. De préférence, la personne du samedi fait la réception du vendredi après-midi.`});
   }
   return {issues,bad,warn,total:slots.length,filled:list.length,empty:slots.length-list.length};
 }
 
-function blankLoad(){ return {recA:0,recM:0,mac:0,foeto:0,sout:0,sam:0,all:0,w:{recA:0,recM:0,mac:0,foeto:0,sout:0,total:0}}; }
+function blankLoad(){ return {recA:0,recM:0,mac:0,foeto:0,sout:0,sam:0,friRecA:0,friSout:0,all:0,w:{recA:0,recM:0,mac:0,foeto:0,sout:0,total:0}}; }
 const LOAD_KEY = {recA:'recA',recM:'recM',mac1:'mac',mac2:'mac',foeto:'foeto',sout:'sout',sam:'sam'};
-function tally(L,post,thisWeek){
+function tally(L,post,thisWeek,date){
   const k = LOAD_KEY[post];
   L[k]++; L.all++;
+  if(date && weekday(date)===4){ if(post==='recA') L.friRecA++; if(post==='sout') L.friSout++; }
   if(thisWeek){ L.w.total++; if(k in L.w) L.w[k]++; }
 }
 function postCost(L,post,noise){
@@ -447,7 +482,7 @@ function balanceScore(load){
   const col = (f,who=INTERNS) => who.map(x => f(load[x]));
   const foetoTeam = INTERNS.filter(x => canPost(x,'foeto'));
   return 100*spread(col(L => L.recA)) + 40*spread(col(L => L.w.recA))
-    + 30*spread(col(L => L.sout)) + 30*spread(col(L => L.sam))
+    + 30*spread(col(L => L.sout)) + 30*spread(col(L => L.friSout)) + 20*spread(col(L => L.friRecA))
     + 20*spread(col(L => L.foeto,foetoTeam)) + 20*spread(col(L => L.recM)) + 12*spread(col(L => L.mac))
     + 15*spread(col(L => L.all)) + 15*spread(col(L => L.w.total));
 }
@@ -461,31 +496,16 @@ function fillOnce(work,monday,off,load,rng,amp){
   const put = (d,p,x) => {
     (work.days[d] = work.days[d] || {})[p] = x;
     (patch[d] = patch[d] || {})[p] = x;
-    tally(load[x],p,true);
+    tally(load[x],p,true,d);
   };
   const soutienFree = x => load[x].w.sout===0;
   const dates = weekDates(monday), fri = dates[4], sat = dates[5];
   const friOpen = !isClosed(work,fri), satOpen = !isClosed(work,sat);
 
-  if(satOpen){
-    const curSat = cellOf(work,sat,'sam'), curSout = friOpen ? cellOf(work,fri,'sout') : '';
-    const friRA = friOpen ? cellOf(work,fri,'recA') : '';
-    if(!curSat && curSout && !off(curSout,sat,'sam')) put(sat,'sam',curSout);
-    else if(curSat && !curSout && friOpen && !off(curSat,fri,'sout') && friRA!==curSat && soutienFree(curSat)) put(fri,'sout',curSat);
-    else if(!curSat){
-      const both = INTERNS.filter(x => !off(x,sat,'sam') && (!friOpen || curSout || (!off(x,fri,'sout') && x!==friRA && soutienFree(x))));
-      const pool = both.length ? both : INTERNS.filter(x => !off(x,sat,'sam'));
-      let best = '', score = Infinity;
-      pool.forEach(x => {
-        const s = load[x].sam*10 + load[x].sout*4 + rng()*amp*4;
-        if(s<score){ score = s; best = x; }
-      });
-      if(best){
-        put(sat,'sam',best);
-        if(friOpen && !curSout && both.includes(best)) put(fri,'sout',best);
-      }
-    }
-  }
+  /* Le samedi est choisi à la main. Sa personne passe de préférence en réception le vendredi après-midi. */
+  const sp = satOpen ? cellOf(work,sat,'sam') : '';
+  if(sp && friOpen && !cellOf(work,fri,'recA') && !off(sp,fri,'recA') && cellOf(work,fri,'sout')!==sp
+     && !MAIN_POSTS.some(p => cellOf(work,fri,p)===sp)) put(fri,'recA',sp);
 
   const order = [0,1,2,3,4];
   for(let i=4;i>0;i--){ const j = Math.floor(rng()*(i+1)); [order[i],order[j]] = [order[j],order[i]]; }
@@ -498,7 +518,9 @@ function fillOnce(work,monday,off,load,rng,amp){
     const raFixed = cellOf(work,d,'recA'), soFixed = cellOf(work,d,'sout');
     const noise = {};
     INTERNS.forEach(x => { noise[x] = {}; POSTS.forEach(p => { noise[x][p.id] = rng()*amp; }); });
-    const costOf = (x,p) => postCost(load[x],p,noise[x][p]);
+    const costOf = (x,p) => postCost(load[x],p,noise[x][p])
+      + (i===4 && p==='sout' ? load[x].friSout*8 + (x===sp ? 400 : 0) : 0)
+      + (i===4 && p==='recA' ? load[x].friRecA*8 : 0);
     let best = {cost:Infinity,pick:{}};
     const pickNow = {};
     const walk = (k,cost) => {
@@ -519,6 +541,7 @@ function fillOnce(work,monday,off,load,rng,amp){
       const p = free[k];
       INTERNS.forEach(x => {
         if(used.has(x) || !canPost(x,p) || off(x,d,p)) return;
+        if(p==='foeto' && load[x].w.foeto>0) return;
         if(p==='recA' && x===soFixed) return;
         used.add(x); pickNow[p] = x;
         walk(k+1,cost+costOf(x,p));
@@ -541,9 +564,9 @@ function propose(week,monday,indispos,allWeeks,rng=Math.random,tries=200){
   const load0 = Object.fromEntries(INTERNS.map(x => [x,blankLoad()]));
   Object.keys(allWeeks).forEach(id => {
     if(id===monday) return;
-    assignments(allWeeks[id],id).forEach(a => tally(load0[a.who],a.post,false));
+    assignments(allWeeks[id],id).forEach(a => tally(load0[a.who],a.post,false,a.date));
   });
-  assignments(start,monday).forEach(a => tally(load0[a.who],a.post,true));
+  assignments(start,monday).forEach(a => tally(load0[a.who],a.post,true,a.date));
   let best = null;
   for(let t=0;t<tries;t++){
     const work = JSON.parse(JSON.stringify(start));
@@ -556,15 +579,27 @@ function propose(week,monday,indispos,allWeeks,rng=Math.random,tries=200){
   return best.patch;
 }
 
-/* Compteur : uniquement les réceptions de l'après-midi. */
+/* Compteur : réceptions et soutiens, avec la part du vendredi. */
 function countAll(weeks){
-  const out = Object.fromEntries(INTERNS.map(x => [x,{recA:0,byWeek:{}}]));
+  const out = Object.fromEntries(INTERNS.map(x => [x,{recA:0,recAFri:0,sout:0,soutFri:0,sam:0}]));
   Object.keys(weeks).forEach(id => {
     assignments(weeks[id],id).forEach(a => {
-      if(a.post!=='recA') return;
-      out[a.who].recA++;
-      out[a.who].byWeek[id] = (out[a.who].byWeek[id]||0)+1;
+      const r = out[a.who], fri = weekday(a.date)===4;
+      if(a.post==='recA'){ r.recA++; if(fri) r.recAFri++; }
+      if(a.post==='sout'){ r.sout++; if(fri) r.soutFri++; }
+      if(a.post==='sam') r.sam++;
     });
+  });
+  return out;
+}
+/* Postes de chaque interne sur une semaine. */
+const STAT_ROWS = [['Réception matin',['recM']],['Macro',['mac1','mac2']],['Fœto',['foeto']],['Réception après-midi',['recA']],['Soutien',['sout']],['Samedi',['sam']]];
+function weekStats(wk,monday){
+  const out = Object.fromEntries(INTERNS.map(x => [x,{total:0}]));
+  assignments(wk,monday).forEach(a => {
+    const r = out[a.who];
+    r[a.post] = (r[a.post]||0)+1;
+    r.total++;
   });
   return out;
 }
@@ -581,7 +616,7 @@ const THIS_MON = mondayOf(TODAY);
 
 const state = {
   weeks:{}, indispos:{}, month:mondayOfNext().slice(0,7), open:{}, hl:null, ready:false,
-  db:null, offline:false, readOnly:false, slow:false, confirmClear:null, offMode:'jour',
+  db:null, offline:false, readOnly:false, slow:false, confirmClear:null, confirmUnfreeze:null, offMode:'jour',
 };
 function mondayOfNext(){ return addDays(THIS_MON,7); }
 let pending = 0, pendingRender = false, snapWeeks = {}, snapOff = {};
@@ -601,7 +636,7 @@ function cleanWeek(id,raw){
   });
   const rc = (raw && raw.closed) || {};
   Object.keys(rc).forEach(d => { if(isYmd(d) && typeof rc[d]==='boolean') closed[d] = rc[d]; });
-  return {monday:id,days,closed};
+  return {monday:id,days,closed,frozen:!!(raw && raw.frozen===true)};
 }
 function cleanOff(raw){
   const out = {}, r = (raw && raw.dates) || {};
@@ -650,13 +685,19 @@ function toggleOff(x,d){
 }
 function runPropose(w){
   const wk = ensureWeek(w);
+  if(wk.frozen) return;
   const patch = propose(wk,w,state.indispos,state.weeks);
   const n = Object.values(patch).reduce((s,o) => s+Object.keys(o).length,0);
   if(!n){ toast('Aucune case à compléter.'); return; }
   Object.entries(patch).forEach(([d,o]) => { wk.days[d] = {...(wk.days[d]||{}),...o}; });
   save('weeks/'+w,{days:patch},wk);
   const left = checkWeek(wk,w,state.indispos).empty;
-  toast(left ? `${plural(n,'poste proposé','postes proposés')}. ${plural(left,'poste reste vide','postes restent vides')} : pas assez d'internes disponibles.` : `${plural(n,'poste proposé','postes proposés')}. Tout reste modifiable.`);
+  const satOpen = !isClosed(wk,addDays(w,5));
+  const noSat = satOpen && !cellOf(wk,addDays(w,5),'sam');
+  const leftWeek = left-(noSat?1:0);
+  toast(`${plural(n,'poste proposé','postes proposés')}.`
+    + (leftWeek ? ` ${plural(leftWeek,'poste reste vide','postes restent vides')} : pas assez d'internes disponibles.` : '')
+    + (noSat ? ' Il reste à choisir le samedi.' : ' Tout reste modifiable.'));
   render();
 }
 function runClear(w){
@@ -670,6 +711,32 @@ function runClear(w){
   wk.days = {};
   save('weeks/'+w,null,wk,{replace:true});
   toast('Semaine vidée.');
+  render();
+}
+function setSat(w,x){
+  const wk = ensureWeek(w);
+  if(wk.frozen) return;
+  const sat = addDays(w,5);
+  setCell(w,sat,'sam',cellOf(wk,sat,'sam')===x ? '' : x);
+}
+function freeze(w){
+  const wk = ensureWeek(w);
+  wk.frozen = true;
+  save('weeks/'+w,{frozen:true},wk);
+  toast('Semaine figée. Plus aucune case ne peut changer.');
+  render();
+}
+function unfreeze(w){
+  if(state.confirmUnfreeze!==w){
+    state.confirmUnfreeze = w; render();
+    setTimeout(() => { if(state.confirmUnfreeze===w){ state.confirmUnfreeze = null; render(); } },4000);
+    return;
+  }
+  state.confirmUnfreeze = null;
+  const wk = ensureWeek(w);
+  wk.frozen = false;
+  save('weeks/'+w,{frozen:false},wk);
+  toast('Semaine modifiable à nouveau.');
   render();
 }
 function toggleDayOpen(w,d){
@@ -698,6 +765,7 @@ function visibleWeeks(){
   return out;
 }
 const locked = () => !state.ready || state.readOnly;
+const wkLocked = wk => locked() || !!(wk && wk.frozen);
 function rangeLabel(m){
   const s = m, e = addDays(m,5);
   const [sd,sm,ed,em] = [+s.slice(8),+s.slice(5,7)-1,+e.slice(8),+e.slice(5,7)-1];
@@ -718,6 +786,7 @@ function optionsFor(wk,date,post,value,friSout){
       const otherSout = post==='sout' && weekDates(mondayOf(date)).slice(0,5).some(d => d!==date && !isClosed(wk,d) && cellOf(wk,d,'sout')===x);
       if(offFor(state.indispos,x,date,post)) note = 'indispo';
       else if(!canPost(x,post)) note = 'pas de Fœto';
+      else if(post==='foeto' && weekDates(mondayOf(date)).slice(0,5).some(d => d!==date && !isClosed(wk,d) && cellOf(wk,d,'foeto')===x)) note = 'déjà un Fœto cette semaine';
       else if(post==='sout'){
         if(otherSout) note = 'déjà un soutien cette semaine';
         else if(day.recA===x) note = 'en réception après-midi';
@@ -739,7 +808,7 @@ function pickHtml(w,wk,date,post,chk,friSout){
   const cls = chk.bad.has(key) ? ' bad' : chk.warn.has(key) ? ' warn' : '';
   const style = v ? ` style="--c:var(--${v})"` : '';
   const on = v && v===state.hl ? ' on' : '';
-  return `<div class="cell${cls}"><select class="pick${v?'':' empty'}${on}" id="c-${date}-${post}" data-w="${w}" data-d="${date}" data-p="${post}" data-i="${v}"${style} aria-label="${POST_LABEL[post]}, ${dayLabel(date)}"${locked()?' disabled':''}>${optionsFor(wk,date,post,v,friSout)}</select></div>`;
+  return `<div class="cell${cls}"><select class="pick${v?'':' empty'}${on}" id="c-${date}-${post}" data-w="${w}" data-d="${date}" data-p="${post}" data-i="${v}"${style} aria-label="${POST_LABEL[post]}, ${dayLabel(date)}"${wkLocked(wk)?' disabled':''}>${optionsFor(wk,date,post,v,friSout)}</select></div>`;
 }
 function headCell(w,wk,d){
   const i = weekday(d), hol = holidayName(d);
@@ -747,20 +816,58 @@ function headCell(w,wk,d){
   let tag = '';
   if(hol){
     const closed = isClosed(wk,d);
-    tag = `<span class="ferie-tag">Férié · <button id="o-${d}" data-act="day-open" data-w="${w}" data-d="${d}"${locked()?' disabled':''}>${closed?'ouvrir':'fermer'}</button></span>`;
+    tag = `<span class="ferie-tag">Férié · <button id="o-${d}" data-act="day-open" data-w="${w}" data-d="${d}"${wkLocked(wk)?' disabled':''}>${closed?'ouvrir':'fermer'}</button></span>`;
   }
   return `<th scope="col" class="${today.trim()}">${DAY_SHORT[i]} <span class="dnum">${+d.slice(8)}</span>${tag}</th>`;
 }
-function weekHtml(id){
+function satBarHtml(id,wk,dates,chk,lock,sams){
+  const fri = dates[4], sat = dates[5];
+  const hol = holidayName(sat);
+  const toggle = hol ? ` · <button id="o-${sat}" data-act="day-open" data-w="${id}" data-d="${sat}"${lock?' disabled':''}>${isClosed(wk,sat)?'ouvrir':'fermer'}</button>` : '';
+  if(isClosed(wk,sat)) return `<div class="sat-bar"><div class="sat-lbl"><b>Samedi ${+sat.slice(8)}</b><span class="sat-closed">${hol||'Fermé'}${toggle}</span></div></div>`;
+  const sp = cellOf(wk,sat,'sam');
+  const friOpen = !isClosed(wk,fri);
+  let hint = `<span class="sat-hint">Choisis qui fait le samedi. « Proposer » le mettra de préférence en réception le vendredi après-midi.${toggle}</span>`;
+  if(sp){
+    const ra = friOpen ? cellOf(wk,fri,'recA') : '', so = friOpen ? cellOf(wk,fri,'sout') : '';
+    if(so===sp) hint = `<span class="sat-hint warn">${sp} fait aussi le soutien du vendredi. De préférence, mets-le en réception l'après-midi.${toggle}</span>`;
+    else if(ra===sp) hint = `<span class="sat-hint">${sp} est en réception le vendredi après-midi.${toggle}</span>`;
+    else if(!friOpen) hint = `<span class="sat-hint">Le vendredi est fermé.${toggle}</span>`;
+    else hint = `<span class="sat-hint">${sp} n'est pas en réception le vendredi après-midi${ra?' ('+ra+' y est)':''}.${toggle}</span>`;
+  }
+  const key = sat+'|sam';
+  const chips = INTERNS.map(x => {
+    const on = sp===x;
+    const isOff = offFor(state.indispos,x,sat,'sam');
+    const cls = ['chip', isOff && !on ? 'off' : '', on && chk.bad.has(key) ? 'bad' : '', on && chk.warn.has(key) ? 'warn' : ''].filter(Boolean).join(' ');
+    const n = sams[x].sam;
+    const label = `${x}, ${n} samedi${n>1?'s':''} au total${isOff?', indispo samedi matin':''}`;
+    return `<button class="${cls}" style="--c:var(--${x})" id="s-${id}-${x}" data-act="sat" data-w="${id}" data-i="${x}" aria-pressed="${on}" aria-label="${label}" title="${label}"${lock || (isOff && !on) ?' disabled':''}>${x}<small>${n}</small></button>`;
+  }).join('');
+  return `<div class="sat-bar"><div class="sat-lbl"><b>Samedi ${+sat.slice(8)} matin</b>${hint}</div>
+    <div class="sat-chips" role="group" aria-label="Interne du samedi ${+sat.slice(8)}">${chips}</div></div>`;
+}
+function statsHtml(wk,id){
+  const st = weekStats(wk,id);
+  const head = INTERNS.map(x => `<th scope="col"><span class="code" style="--c:var(--${x})">${x}</span></th>`).join('');
+  const cell = v => `<td${v?'':' class="zero"'}>${v||'·'}</td>`;
+  const rows = STAT_ROWS.map(([label,posts]) => `<tr><th scope="row">${label}</th>${INTERNS.map(x => cell(posts.reduce((n,p) => n+(st[x][p]||0),0))).join('')}</tr>`).join('');
+  const total = `<tr class="total"><th scope="row">Total</th>${INTERNS.map(x => `<td>${st[x].total}</td>`).join('')}</tr>`;
+  return `<div class="wstats-wrap"><h3>Postes de la semaine par interne</h3><div class="wstats-scroll"><table class="wstats">
+    <thead><tr><th scope="col"><span class="visually-hidden">Poste</span></th>${head}</tr></thead><tbody>${rows}${total}</tbody></table></div></div>`;
+}
+function weekHtml(id,sams){
   const wk = state.weeks[id] || {monday:id,days:{},closed:{}};
-  const dates = weekDates(id);
+  const dates = weekDates(id), days5 = dates.slice(0,5);
   const chk = checkWeek(wk,id,state.indispos);
+  const frozen = !!wk.frozen, lock = wkLocked(wk);
   const errs = chk.issues.filter(x => x.kind==='e').length;
   const warns = chk.issues.length-errs;
   const prevMon = addDays(THIS_MON,-7);
   const isOpen = id in state.open ? state.open[id] : id>=prevMon;
   const rel = relLabel(id);
   const pills = [];
+  if(frozen) pills.push(`<span class="pill frozen">Figée</span>`);
   if(errs) pills.push(`<span class="pill err">${plural(errs,'conflit','conflits')}</span>`);
   if(warns) pills.push(`<span class="pill warn">${warns} à vérifier</span>`);
   if(chk.empty) pills.push(`<span class="pill">${plural(chk.empty,'poste à remplir','postes à remplir')}</span>`);
@@ -768,29 +875,16 @@ function weekHtml(id){
 
   let body = '';
   if(isOpen){
-    const friSout = isClosed(wk,dates[4]) ? '' : cellOf(wk,dates[4],'sout');
-    const sat = dates[5];
-    const satClosed = isClosed(wk,sat);
     const rows = POSTS.map((p,r) => {
-      const cells = dates.slice(0,5).map((d,i) => {
+      const cells = days5.map((d,i) => {
         if(isClosed(wk,d)) return r===0 ? `<td rowspan="${POSTS.length}" class="closed"><span>${holidayName(d)||'Fermé'}</span></td>` : '';
         if(p.only && !p.only.includes(i)) return `<td class="no-post" aria-label="Pas de poste"></td>`;
-        return `<td>${pickHtml(id,wk,d,p.id,chk,friSout)}</td>`;
+        return `<td>${pickHtml(id,wk,d,p.id,chk,'')}</td>`;
       }).join('');
-      let satCell = '';
-      if(r===0){
-        if(satClosed) satCell = `<td rowspan="${POSTS.length}" class="closed sat"><span>${holidayName(sat)||'Fermé'}</span></td>`;
-        else{
-          const v = cellOf(wk,sat,'sam');
-          const mismatch = v && friSout && v!==friSout;
-          const hint = mismatch ? `<span class="sat-hint warn">Soutien vendredi : ${friSout}</span>` : `<span class="sat-hint">Suit le soutien du vendredi</span>`;
-          satCell = `<td rowspan="${POSTS.length}" class="sat"><div class="sat-box"><span class="sat-title">Samedi matin</span>${pickHtml(id,wk,sat,'sam',chk,friSout)}${hint}</div></td>`;
-        }
-      }
       const brk = p.id==='recA' ? ' class="break"' : '';
-      return `<tr${brk}><th scope="row">${p.name}<small>${p.period}</small></th>${cells}${satCell}</tr>`;
+      return `<tr${brk}><th scope="row">${p.name}<small>${p.period}</small></th>${cells}</tr>`;
     }).join('');
-    const offRow = dates.map(d => {
+    const offRow = days5.map(d => {
       const who = INTERNS.filter(x => state.indispos[x] && state.indispos[x][d]).map(x => {
         const v = state.indispos[x][d];
         return `<span>${x}${v===true?'':' '+(v==='matin'?'matin':'aprem')}</span>`;
@@ -798,19 +892,28 @@ function weekHtml(id){
       return `<td>${who.join('')}</td>`;
     }).join('');
     const issues = chk.issues.length ? `<ul class="issues">${chk.issues.map(x => `<li class="${x.kind}"><b>${x.kind==='e'?'Conflit':'À vérifier'}</b><span>${x.text}</span></li>`).join('')}</ul>` : '';
-    body = `<div class="grid-scroll"><table class="grid">
-      <colgroup><col class="post-col">${dates.map(() => '<col>').join('')}</colgroup>
-      <thead><tr><th class="corner" scope="col">Poste</th>${dates.map(d => headCell(id,wk,d)).join('')}</tr></thead>
+    body = satBarHtml(id,wk,dates,chk,lock,sams) + `<div class="grid-scroll"><table class="grid">
+      <colgroup><col class="post-col">${days5.map(() => '<col>').join('')}</colgroup>
+      <thead><tr><th class="corner" scope="col">Poste</th>${days5.map(d => headCell(id,wk,d)).join('')}</tr></thead>
       <tbody>${rows}<tr class="offrow"><th scope="row">Indispos</th>${offRow}</tr></tbody>
-    </table></div>${issues}`;
+    </table></div>${issues}` + statsHtml(wk,id);
   }
   const iw = isoWeek(id);
-  const confirm = state.confirmClear===id;
-  const actions = isOpen ? `<div class="week-actions">
-      <button class="btn${confirm?' danger':''}" id="x-${id}" data-act="clear" data-w="${id}"${locked()?' disabled':''}>${confirm?'Confirmer : tout vider':'Vider'}</button>
-      <button class="btn primary" id="p-${id}" data-act="propose" data-w="${id}"${locked()?' disabled':''}>Proposer la semaine</button>
-    </div>` : '';
-  return `<section class="week${id===THIS_MON?' now':''}${isOpen?' is-open':''}" id="w-${id}">
+  let actions = '';
+  if(isOpen && frozen){
+    const cu = state.confirmUnfreeze===id;
+    actions = `<div class="week-actions">
+      <button class="btn${cu?' danger':''}" id="u-${id}" data-act="unfreeze" data-w="${id}"${locked()?' disabled':''}>${cu?'Confirmer : défiger':'Défiger'}</button>
+    </div>`;
+  }else if(isOpen){
+    const confirm = state.confirmClear===id;
+    actions = `<div class="week-actions">
+      <button class="btn${confirm?' danger':''}" id="x-${id}" data-act="clear" data-w="${id}"${lock?' disabled':''}>${confirm?'Confirmer : tout vider':'Vider'}</button>
+      <button class="btn" id="f-${id}" data-act="freeze" data-w="${id}"${lock?' disabled':''}>Figer</button>
+      <button class="btn primary" id="p-${id}" data-act="propose" data-w="${id}"${lock?' disabled':''}>Proposer la semaine</button>
+    </div>`;
+  }
+  return `<section class="week${id===THIS_MON?' now':''}${isOpen?' is-open':''}${frozen?' is-frozen':''}" id="w-${id}">
     <div class="week-head">
       <button class="week-id" id="t-${id}" data-act="fold" data-w="${id}" aria-expanded="${isOpen}">
         <span class="chev" aria-hidden="true">›</span>
@@ -854,23 +957,21 @@ function renderCalendars(){
 }
 function renderCounter(){
   const c = countAll(state.weeks);
-  const all = visibleWeeks();
-  const recent = all.slice(-8);
   const totals = INTERNS.map(x => c[x].recA);
   const max = Math.max(...totals,1);
-  const head = recent.map(id => `<th scope="col"><span class="wk">S${pad(isoWeek(id).week)}</span></th>`).join('');
+  const cell = v => `<td${v?'':' class="sub"'}>${v}</td>`;
   const rows = INTERNS.map((x,i) => {
     const r = c[x];
-    const wk = recent.map(id => { const v = r.byWeek[id]||0; return `<td><span class="wk${v?' has':''}">${v||'·'}</span></td>`; }).join('');
     return `<tr style="--c:var(--${x})"><th scope="row"><span class="code">${x}</span></th>
-      <td class="main"><div class="bar-row"><strong>${totals[i]}</strong><div class="bar"><i style="width:${totals[i]/max*100}%"></i></div></div></td>${wk}</tr>`;
+      <td class="main"><div class="bar-row"><strong>${totals[i]}</strong><div class="bar"><i style="width:${totals[i]/max*100}%"></i></div></div></td>
+      ${cell(r.recAFri)}${cell(r.sout)}${cell(r.soutFri)}</tr>`;
   }).join('');
-  $('count').innerHTML = `<table class="count"><thead><tr><th scope="col">Interne</th><th scope="col" class="main">Réceptions après-midi</th>${head}</tr></thead><tbody>${rows}</tbody></table>`;
+  $('count').innerHTML = `<table class="count"><thead><tr><th scope="col">Interne</th><th scope="col" class="main">Réceptions après-midi</th><th scope="col">Réceptions<br>vendredi après-midi</th><th scope="col">Soutiens</th><th scope="col">Soutiens<br>vendredi</th></tr></thead><tbody>${rows}</tbody></table>`;
   const hi = Math.max(...totals), lo = Math.min(...totals);
   if(hi===0) $('gap').textContent = "Le compteur se remplit dès qu'une semaine est saisie.";
   else{
     const who = INTERNS.filter((x,i) => totals[i]===lo).join(', ');
-    $('gap').innerHTML = hi===lo ? 'Répartition égale entre les six internes.' : `Écart de <b>${hi-lo}</b> entre le plus et le moins posté. Le moins posté : <b>${who}</b>.`;
+    $('gap').innerHTML = hi===lo ? 'Réceptions après-midi : répartition égale entre les six internes.' : `Réceptions après-midi : écart de <b>${hi-lo}</b> entre le plus et le moins posté. Le moins posté : <b>${who}</b>.`;
   }
 }
 function renderLead(){
@@ -900,7 +1001,8 @@ function paintSync(){
 function render(){
   const active = document.activeElement && document.activeElement.id;
   renderCalendars();
-  $('weeks').innerHTML = visibleWeeks().map(weekHtml).join('');
+  const sams = countAll(state.weeks);
+  $('weeks').innerHTML = visibleWeeks().map(id => weekHtml(id,sams)).join('');
   renderCounter();
   renderLead();
   paintSync();
@@ -946,6 +1048,9 @@ document.addEventListener('click',e => {
   else if(act==='off-mode'){ state.offMode = b.dataset.m; render(); }
   else if(act==='off') toggleOff(i,d);
   else if(act==='propose') runPropose(w);
+  else if(act==='sat') setSat(w,i);
+  else if(act==='freeze') freeze(w);
+  else if(act==='unfreeze') unfreeze(w);
   else if(act==='clear') runClear(w);
   else if(act==='day-open') toggleDayOpen(w,d);
   else if(act==='add-week') addWeek();
