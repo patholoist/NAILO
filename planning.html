@@ -171,7 +171,8 @@ table.wstats{border-collapse:collapse;width:100%;min-width:520px;font-variant-nu
 .wstats th[scope="row"]{text-align:left;font-weight:500;color:var(--muted)}
 .wstats thead th{border-bottom:1px solid var(--line-strong)}
 .wstats td.zero{color:var(--muted);opacity:.6}
-.wstats tr.total>*{border-bottom:0;border-top:1px solid var(--line-strong);font-weight:700;color:var(--fg)}
+.wstats tr.total>*{border-top:1px solid var(--line-strong);font-weight:700;color:var(--fg)}
+.wstats tr.total2>*{border-bottom:0;font-weight:500;color:var(--muted)}
 .cell{position:relative}
 .pick{appearance:none;-webkit-appearance:none;width:100%;height:36px;padding:0 4px;border-radius:4px;border:1px solid transparent;
   font:600 13.5px var(--font-mono);letter-spacing:.05em;text-align:center;text-align-last:center;cursor:pointer;
@@ -199,12 +200,12 @@ main.hl .pick:not(.on){opacity:.28}
 
 /* Compteur */
 .count-wrap{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow-x:auto}
-table.count{border-collapse:collapse;width:100%;min-width:620px;font-variant-numeric:tabular-nums}
+table.count{border-collapse:collapse;width:100%;min-width:700px;font-variant-numeric:tabular-nums}
 .count th,.count td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:center}
 .count tbody tr:last-child>*{border-bottom:0}
 .count thead th{font-size:12.5px;font-weight:600;color:var(--muted);line-height:1.2;vertical-align:bottom}
 .count th[scope="row"],.count thead th:first-child{text-align:left}
-.count .main{width:36%;text-align:left}
+.count .main{width:32%;text-align:left}
 .count .sub{font-weight:500;color:var(--muted)}
 .bar-row{display:flex;align-items:center;gap:10px}
 .bar-row strong{font:800 20px/1 var(--font-display);min-width:26px}
@@ -289,6 +290,7 @@ details.rules ul{margin:10px 0 2px;padding-left:18px;display:flex;flex-direction
         <li>Fœto : lundi, mercredi et vendredi uniquement. MAJ n'est pas posté en Fœto pour le moment.</li>
         <li>Indispo le matin : pas de poste du matin, ni le samedi matin. Indispo l'après-midi : pas de réception après-midi ni de soutien.</li>
         <li>Un interne indispo n'est jamais proposé. S'il est posté à la main, la case passe en alerte.</li>
+        <li>Les postes de la semaine sont répartis à égalité sans compter le soutien. Le soutien, petit poste en plus, est équilibré à part.</li>
         <li>« Proposer » complète seulement les cases vides. Il compare 200 combinaisons et garde la plus équilibrée, en commençant par la réception de l'après-midi, puis tous les autres postes. Tes saisies ne sont pas modifiées.</li>
         <li>« Figer » verrouille une semaine : plus aucune case ne bouge, même avec « Proposer ». « Défiger » demande une confirmation.</li>
         <li>Les jours fériés sont fermés par défaut. Tu peux les rouvrir depuis l'en-tête du jour.</li>
@@ -299,7 +301,7 @@ details.rules ul{margin:10px 0 2px;padding-left:18px;display:flex;flex-direction
   <section class="sec" aria-labelledby="h-count">
     <div class="sec-head">
       <div>
-        <h2 id="h-count">Compteur d'après-midi</h2>
+        <h2 id="h-count">Totaux</h2>
         <p>Totaux sur toutes les semaines du planning. La barre suit les réceptions de l'après-midi.</p>
       </div>
     </div>
@@ -459,18 +461,26 @@ function checkWeek(wk,monday,indispos){
   return {issues,bad,warn,total:slots.length,filled:list.length,empty:slots.length-list.length};
 }
 
-function blankLoad(){ return {recA:0,recM:0,mac:0,foeto:0,sout:0,sam:0,friRecA:0,friSout:0,all:0,w:{recA:0,recM:0,mac:0,foeto:0,sout:0,total:0}}; }
+function blankLoad(){ return {recA:0,recM:0,mac:0,foeto:0,sout:0,sam:0,friRecA:0,friSout:0,all:0,allMain:0,w:{recA:0,recM:0,mac:0,foeto:0,sout:0,total:0,main:0}}; }
 const LOAD_KEY = {recA:'recA',recM:'recM',mac1:'mac',mac2:'mac',foeto:'foeto',sout:'sout',sam:'sam'};
 function tally(L,post,thisWeek,date){
   const k = LOAD_KEY[post];
   L[k]++; L.all++;
+  if(post!=='sout'){ L.allMain++; if(thisWeek) L.w.main++; }
   if(date && weekday(date)===4){ if(post==='recA') L.friRecA++; if(post==='sout') L.friSout++; }
   if(thisWeek){ L.w.total++; if(k in L.w) L.w[k]++; }
+}
+function untally(L,post,date){
+  const k = LOAD_KEY[post];
+  L[k]--; L.all--; L.w.total--; if(k in L.w) L.w[k]--;
+  if(post!=='sout'){ L.allMain--; L.w.main--; }
+  if(date && weekday(date)===4){ if(post==='recA') L.friRecA--; if(post==='sout') L.friSout--; }
 }
 function postCost(L,post,noise){
   const k = LOAD_KEY[post];
   const weight = {recA:14,sout:8,foeto:6,recM:5,mac:3}[k];
-  return L.w.total*4 + (L[k]+(L.w[k]||0))*weight + noise;
+  /* Le soutien est un petit poste en plus : il ne compte pas dans l'équilibre des postes de la semaine. */
+  return (post==='sout' ? 0 : L.w.main*12) + (L[k]+(L.w[k]||0))*weight + noise;
 }
 
 /* Note d'équilibre d'une semaine complétée : plus elle est basse, plus la répartition est égale. */
@@ -484,7 +494,7 @@ function balanceScore(load){
   return 100*spread(col(L => L.recA)) + 40*spread(col(L => L.w.recA))
     + 30*spread(col(L => L.sout)) + 30*spread(col(L => L.friSout)) + 20*spread(col(L => L.friRecA))
     + 20*spread(col(L => L.foeto,foetoTeam)) + 20*spread(col(L => L.recM)) + 12*spread(col(L => L.mac))
-    + 15*spread(col(L => L.all)) + 15*spread(col(L => L.w.total));
+    + 15*spread(col(L => L.allMain)) + 2000*spread(col(L => L.w.main));
 }
 
 /* Si l'effectif manque, la réception reste couverte en priorité. Macro 2 reste vide en premier. */
@@ -555,6 +565,30 @@ function fillOnce(work,monday,off,load,rng,amp){
   return patch;
 }
 
+/* Retouche : un poste proposé passe d'un interne trop chargé à un interne libre ce jour-là. */
+function repair(work,monday,off,load,patch){
+  const sp = isClosed(work,addDays(monday,5)) ? '' : cellOf(work,addDays(monday,5),'sam');
+  for(let round=0; round<40; round++){
+    let moved = false;
+    weekDates(monday).slice(0,5).forEach((d,i) => {
+      if(isClosed(work,d) || !patch[d]) return;
+      const busy = new Set(MAIN_POSTS.map(p => cellOf(work,d,p)).filter(Boolean));
+      MAIN_POSTS.forEach(p => {
+        const x = patch[d][p];
+        if(!x || x==='' || (i===4 && p==='recA' && x===sp)) return;
+        const y = INTERNS.filter(y => !busy.has(y) && load[x].w.main-load[y].w.main>=2 && canPost(y,p) && !off(y,d,p)
+            && !(p==='foeto' && load[y].w.foeto>0) && !(p==='recA' && cellOf(work,d,'sout')===y))
+          .sort((a,b) => load[a].w.main-load[b].w.main)[0];
+        if(!y) return;
+        work.days[d][p] = y; patch[d][p] = y;
+        untally(load[x],p,d); tally(load[y],p,true,d);
+        busy.delete(x); busy.add(y); moved = true;
+      });
+    });
+    if(!moved) break;
+  }
+}
+
 /* Complète les cases vides d'une semaine sans toucher aux cases remplies.
    Plusieurs essais sont comparés : d'abord le moins de postes vides, puis le meilleur équilibre. */
 function propose(week,monday,indispos,allWeeks,rng=Math.random,tries=200){
@@ -572,6 +606,7 @@ function propose(week,monday,indispos,allWeeks,rng=Math.random,tries=200){
     const work = JSON.parse(JSON.stringify(start));
     const load = JSON.parse(JSON.stringify(load0));
     const patch = fillOnce(work,monday,off,load,rng,1+(t%5)*1.5);
+    repair(work,monday,off,load,patch);
     const missing = slotsOf(work,monday).filter(s => !cellOf(work,s.date,s.post)).reduce((n,s) => n+MISS[s.post],0);
     const score = missing*100 + balanceScore(load);
     if(!best || score<best.score) best = {score,patch};
@@ -581,13 +616,14 @@ function propose(week,monday,indispos,allWeeks,rng=Math.random,tries=200){
 
 /* Compteur : réceptions et soutiens, avec la part du vendredi. */
 function countAll(weeks){
-  const out = Object.fromEntries(INTERNS.map(x => [x,{recA:0,recAFri:0,sout:0,soutFri:0,sam:0}]));
+  const out = Object.fromEntries(INTERNS.map(x => [x,{recA:0,recAFri:0,sout:0,soutFri:0,sam:0,foeto:0}]));
   Object.keys(weeks).forEach(id => {
     assignments(weeks[id],id).forEach(a => {
       const r = out[a.who], fri = weekday(a.date)===4;
       if(a.post==='recA'){ r.recA++; if(fri) r.recAFri++; }
       if(a.post==='sout'){ r.sout++; if(fri) r.soutFri++; }
       if(a.post==='sam') r.sam++;
+      if(a.post==='foeto') r.foeto++;
     });
   });
   return out;
@@ -595,11 +631,12 @@ function countAll(weeks){
 /* Postes de chaque interne sur une semaine. */
 const STAT_ROWS = [['Réception matin',['recM']],['Macro',['mac1','mac2']],['Fœto',['foeto']],['Réception après-midi',['recA']],['Soutien',['sout']],['Samedi',['sam']]];
 function weekStats(wk,monday){
-  const out = Object.fromEntries(INTERNS.map(x => [x,{total:0}]));
+  const out = Object.fromEntries(INTERNS.map(x => [x,{total:0,main:0}]));
   assignments(wk,monday).forEach(a => {
     const r = out[a.who];
     r[a.post] = (r[a.post]||0)+1;
     r.total++;
+    if(a.post!=='sout') r.main++;
   });
   return out;
 }
@@ -852,7 +889,8 @@ function statsHtml(wk,id){
   const head = INTERNS.map(x => `<th scope="col"><span class="code" style="--c:var(--${x})">${x}</span></th>`).join('');
   const cell = v => `<td${v?'':' class="zero"'}>${v||'·'}</td>`;
   const rows = STAT_ROWS.map(([label,posts]) => `<tr><th scope="row">${label}</th>${INTERNS.map(x => cell(posts.reduce((n,p) => n+(st[x][p]||0),0))).join('')}</tr>`).join('');
-  const total = `<tr class="total"><th scope="row">Total</th>${INTERNS.map(x => `<td>${st[x].total}</td>`).join('')}</tr>`;
+  const total = `<tr class="total"><th scope="row">Total sans soutien</th>${INTERNS.map(x => `<td>${st[x].main}</td>`).join('')}</tr>`
+    + `<tr class="total2"><th scope="row">Total avec soutien</th>${INTERNS.map(x => `<td>${st[x].total}</td>`).join('')}</tr>`;
   return `<div class="wstats-wrap"><h3>Postes de la semaine par interne</h3><div class="wstats-scroll"><table class="wstats">
     <thead><tr><th scope="col"><span class="visually-hidden">Poste</span></th>${head}</tr></thead><tbody>${rows}${total}</tbody></table></div></div>`;
 }
@@ -964,9 +1002,9 @@ function renderCounter(){
     const r = c[x];
     return `<tr style="--c:var(--${x})"><th scope="row"><span class="code">${x}</span></th>
       <td class="main"><div class="bar-row"><strong>${totals[i]}</strong><div class="bar"><i style="width:${totals[i]/max*100}%"></i></div></div></td>
-      ${cell(r.recAFri)}${cell(r.sout)}${cell(r.soutFri)}</tr>`;
+      ${cell(r.recAFri)}${cell(r.sout)}${cell(r.soutFri)}${cell(r.foeto)}</tr>`;
   }).join('');
-  $('count').innerHTML = `<table class="count"><thead><tr><th scope="col">Interne</th><th scope="col" class="main">Réceptions après-midi</th><th scope="col">Réceptions<br>vendredi après-midi</th><th scope="col">Soutiens</th><th scope="col">Soutiens<br>vendredi</th></tr></thead><tbody>${rows}</tbody></table>`;
+  $('count').innerHTML = `<table class="count"><thead><tr><th scope="col">Interne</th><th scope="col" class="main">Réceptions après-midi</th><th scope="col">Réceptions<br>vendredi après-midi</th><th scope="col">Soutiens</th><th scope="col">Soutiens<br>vendredi</th><th scope="col">Fœto</th></tr></thead><tbody>${rows}</tbody></table>`;
   const hi = Math.max(...totals), lo = Math.min(...totals);
   if(hi===0) $('gap').textContent = "Le compteur se remplit dès qu'une semaine est saisie.";
   else{
