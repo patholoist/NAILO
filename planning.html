@@ -283,14 +283,14 @@ details.rules ul{margin:10px 0 2px;padding-left:18px;display:flex;flex-direction
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
-/* ===== À REMPLIR : colle ici la configuration de ton projet Firebase ===== */
+/* ===== Configuration du projet Firebase planning-77f6d ===== */
 const FIREBASE_CONFIG = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyAMgEbuXAIqpBmujO96rIx_mZRCdbeBUIY",
+  authDomain: "planning-77f6d.firebaseapp.com",
+  projectId: "planning-77f6d",
+  storageBucket: "planning-77f6d.firebasestorage.app",
+  messagingSenderId: "892763470099",
+  appId: "1:892763470099:web:5b0fdd458d3cb2fbe282e6"
 };
 /* ========================================================================= */
 </script>
@@ -892,7 +892,7 @@ function paintSync(){
   else if(pending){ t = 'Enregistrement…'; k = 'busy'; }
   s.textContent = t; s.dataset.s = k;
   const n = $('notice');
-  const msg = state.offline ? "Firebase n'est pas configuré : tes modifications disparaîtront à la fermeture de la page."
+  const msg = state.offline ? (state.why || "Firebase n'est pas connecté.")+" Tes modifications disparaîtront à la fermeture de la page."
     : state.denied ? "Firebase refuse l'accès au planning. Vérifie les règles de sécurité de Firestore."
     : state.slow && !state.ready ? "La base ne répond pas encore. Le planning s'affichera dès qu'elle sera joignable." : '';
   n.hidden = !msg; n.textContent = msg;
@@ -956,7 +956,8 @@ document.addEventListener('click',e => {
 /* ---------- Base de données ---------- */
 /* Dans Firestore, update() remplace les objets imbriqués : set + merge conserve les autres cases. */
 function connectFirebase(){
-  if(!window.firebase || !FIREBASE_CONFIG.projectId) return null;
+  if(!FIREBASE_CONFIG.projectId){ state.why = "Firebase n'est pas configuré dans ce fichier : le bloc FIREBASE_CONFIG est vide."; return null; }
+  if(!window.firebase){ state.why = "Le module Firebase n'a pas pu se charger depuis gstatic.com. Ton réseau le bloque peut-être : essaie avec une autre connexion, par exemple le partage de connexion de ton téléphone."; return null; }
   firebase.initializeApp(FIREBASE_CONFIG);
   const fs = firebase.firestore();
   return {
@@ -970,7 +971,7 @@ function connectFirebase(){
 async function init(){
   render();
   let db = null;
-  try{ db = connectFirebase(); }catch(_){ db = null; }
+  try{ db = connectFirebase(); }catch(err){ db = null; state.why = "Firebase n'a pas démarré : "+((err && err.message) || err); }
   if(!db){ state.offline = true; state.ready = true; render(); return; }
   state.db = db;
   let gotW = false, gotO = false, liveW = false, liveO = false;
