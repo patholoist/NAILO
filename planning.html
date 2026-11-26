@@ -16,6 +16,7 @@
   --fg:#231C33; --muted:#655D78; --accent:#3F2F8F; --on-accent:#FFFFFF; --on-c:#FFFFFF;
   --err:#B3162B; --err-bg:#FCE8EA; --warn:#7F5300; --warn-bg:#FAEFD6; --ok:#146A47; --ok-bg:#DFF2E8;
   --ALO:#4B3FA8; --ASIM:#C92C6A; --CLEP:#A36706; --MAJ:#1B7F53; --AGR:#1A6AA3; --MTS:#BC4125;
+  --LBU:#0E7782; --LOL:#64741A; --OLA:#7D4A8F;
   --font-display:"Bricolage Grotesque","Hanken Grotesk",system-ui,sans-serif;
   --font-body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
@@ -26,6 +27,7 @@
   --fg:#EEEAF5; --muted:#A79FB9; --accent:#B4A9FF; --on-accent:#17132A; --on-c:#14111C;
   --err:#FF8A95; --err-bg:#3C1A22; --warn:#F2C368; --warn-bg:#35290F; --ok:#6FD6A8; --ok-bg:#15332A;
   --ALO:#A99EFF; --ASIM:#FF87B5; --CLEP:#EDBB57; --MAJ:#62D3A1; --AGR:#6DBDF0; --MTS:#FF9676;
+  --LBU:#5ED0DA; --LOL:#C2D45E; --OLA:#D59BE8;
   color-scheme:dark;
 }}
 :root[data-theme="dark"]{
@@ -33,6 +35,7 @@
   --fg:#EEEAF5; --muted:#A79FB9; --accent:#B4A9FF; --on-accent:#17132A; --on-c:#14111C;
   --err:#FF8A95; --err-bg:#3C1A22; --warn:#F2C368; --warn-bg:#35290F; --ok:#6FD6A8; --ok-bg:#15332A;
   --ALO:#A99EFF; --ASIM:#FF87B5; --CLEP:#EDBB57; --MAJ:#62D3A1; --AGR:#6DBDF0; --MTS:#FF9676;
+  --LBU:#5ED0DA; --LOL:#C2D45E; --OLA:#D59BE8;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -83,7 +86,7 @@ h2{font:600 22px/1.2 var(--font-display);letter-spacing:-.01em;margin:0}
 .seg .g-aprem{background:linear-gradient(to top,currentColor 50%,transparent 50%)}
 .month{display:flex;align-items:center;gap:8px}
 .month strong{min-width:128px;text-align:center;font-weight:600}
-.cals{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.cals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .cal{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px;min-width:0;display:flex;flex-direction:column;gap:8px}
 .cal-head{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .code{font:600 13px/1 var(--font-mono);letter-spacing:.06em;padding:5px 7px;border-radius:3px;
@@ -91,7 +94,7 @@ h2{font:600 22px/1.2 var(--font-display);letter-spacing:-.01em;margin:0}
 .cal-count{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 .cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;font-variant-numeric:tabular-nums}
 .cal-dow{font-size:10.5px;text-align:center;color:var(--muted);font-weight:600}
-.day{aspect-ratio:1;min-height:24px;padding:0;border:0;background:transparent;border-radius:3px;font-size:12px;cursor:pointer;position:relative}
+.day{height:26px;min-height:24px;padding:0;border:0;background:transparent;border-radius:3px;font-size:12px;cursor:pointer;position:relative}
 .day:hover:not(:disabled){background:var(--sunken)}
 .day:disabled{color:var(--muted);opacity:.45;cursor:default}
 .day.ferie{color:var(--muted);text-decoration:underline dotted}
@@ -181,6 +184,7 @@ table.wstats{border-collapse:collapse;width:100%;min-width:520px;font-variant-nu
 .pick:hover:not(:disabled){border-color:var(--c,var(--accent))}
 .pick:disabled{cursor:default;opacity:.8}
 .pick option{color:var(--fg);background:var(--surface);font-family:var(--font-body)}
+.cell.spare .pick.empty{opacity:.45;border-style:dotted}
 .cell.bad .pick{border:2px solid var(--err)}
 .cell.warn .pick{border:2px solid var(--warn)}
 .cell.bad::after,.cell.warn::after{content:"!";position:absolute;top:-4px;right:-3px;width:15px;height:15px;border-radius:50%;
@@ -220,11 +224,15 @@ details.rules{background:var(--surface);border:1px solid var(--line);border-radi
 details.rules summary{cursor:pointer;font-weight:600}
 details.rules ul{margin:10px 0 2px;padding-left:18px;display:flex;flex-direction:column;gap:4px;max-width:72ch}
 
+.special-note{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;padding:10px 14px;border-top:1px solid var(--line);background:color-mix(in oklab,var(--accent) 9%,var(--surface));font-size:13.5px}
+.special-note b{color:var(--accent)}
+.special-note span{min-width:0;flex:1 1 300px}
 .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;
   background:var(--fg);color:var(--bg);padding:9px 14px;border-radius:5px;font-weight:500;font-size:14px;max-width:calc(100vw - 32px)}
 
 @media (max-width:1080px){.cals{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:760px){.cals{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:560px){
   .cals{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   .cal{padding:7px}
@@ -282,18 +290,21 @@ details.rules ul{margin:10px 0 2px;padding-left:18px;display:flex;flex-direction
     <details class="rules">
       <summary>Règles appliquées</summary>
       <ul>
-        <li>Un interne n'a qu'un poste par jour. Le soutien est le seul poste qui peut s'ajouter à un autre.</li>
-        <li>Le soutien ne peut pas être tenu par l'interne de réception de l'après-midi.</li>
-        <li>Le samedi matin se choisit à la main, au-dessus de chaque semaine. « Proposer » met alors cette personne en réception le vendredi après-midi si c'est possible, et pas au soutien.</li>
-        <li>Soutien : un seul par semaine pour chaque interne.</li>
-        <li>Fœto : un seul par semaine pour chaque interne.</li>
-        <li>Fœto : lundi, mercredi et vendredi uniquement. MAJ n'est pas posté en Fœto pour le moment.</li>
-        <li>Indispo le matin : pas de poste du matin, ni le samedi matin. Indispo l'après-midi : pas de réception après-midi ni de soutien.</li>
-        <li>Un interne indispo n'est jamais proposé. S'il est posté à la main, la case passe en alerte.</li>
-        <li>Les postes de la semaine sont répartis à égalité sans compter le soutien. Le soutien, petit poste en plus, est équilibré à part.</li>
-        <li>« Proposer » complète seulement les cases vides. Il compare 200 combinaisons et garde la plus équilibrée, en commençant par la réception de l'après-midi, puis tous les autres postes. Tes saisies ne sont pas modifiées.</li>
-        <li>« Figer » verrouille une semaine : plus aucune case ne bouge, même avec « Proposer ». « Défiger » demande une confirmation.</li>
-        <li>Les jours fériés sont fermés par défaut. Tu peux les rouvrir depuis l'en-tête du jour.</li>
+        <li>Un interne n'a qu'un poste par jour. Seul le soutien peut s'ajouter à un autre poste.</li>
+        <li>L'interne de réception de l'après-midi ne peut pas faire le soutien le même jour.</li>
+        <li>Le soutien va de préférence à quelqu'un qui n'a pas de poste le matin, sauf si ce n'est pas possible.</li>
+        <li>Chaque interne fait au plus un soutien par semaine.</li>
+        <li>Chaque interne fait au plus un Fœto par semaine, sauf MAJ.</li>
+        <li>Le Fœto a lieu le lundi, le mercredi et le vendredi. LBU, LOL et OLA ne sont jamais en Fœto.</li>
+        <li>Macro 3 : deux par semaine, le lundi, le mercredi ou le vendredi. Une pour ALO et une pour ASIM quand c'est possible. Les règles habituelles des macros s'appliquent.</li>
+        <li>Le samedi matin se choisit à la main, au-dessus de chaque semaine. « Proposer » met de préférence cette personne en réception le vendredi après-midi, plutôt qu'au soutien.</li>
+        <li>Une indispo peut porter sur la journée, le matin ou l'après-midi. Le matin : pas de réception du matin, de macro, de Fœto ni de samedi matin. L'après-midi : pas de réception de l'après-midi ni de soutien.</li>
+        <li>Un interne indispo n'est jamais proposé. S'il est posté à la main, la case passe en conflit.</li>
+        <li>Les postes de la semaine sont répartis à égalité en comptant le soutien.</li>
+        <li>Sur le semestre, « Proposer » équilibre en priorité les réceptions de l'après-midi, puis les soutiens, les réceptions et soutiens du vendredi, le Fœto, la réception du matin et les macros. L'équilibre et les totaux comptent à partir de la semaine du 30 novembre 2026.</li>
+        <li>« Proposer » ne remplit que les cases vides. Il ne touche jamais à ce que tu as saisi.</li>
+        <li>« Figer » verrouille une semaine. « Défiger » demande une confirmation.</li>
+        <li>Les jours fériés sont fermés par défaut, et tu peux les rouvrir.</li>
       </ul>
     </details>
   </main>
@@ -302,7 +313,7 @@ details.rules ul{margin:10px 0 2px;padding-left:18px;display:flex;flex-direction
     <div class="sec-head">
       <div>
         <h2 id="h-count">Totaux</h2>
-        <p>Totaux sur toutes les semaines du planning. La barre suit les réceptions de l'après-midi.</p>
+        <p>Totaux du semestre, à partir de la semaine du 30 novembre 2026. La barre suit les réceptions de l'après-midi.</p>
       </div>
     </div>
     <div class="count-wrap" id="count"></div>
@@ -327,22 +338,91 @@ const FIREBASE_CONFIG = {
 </script>
 <script>
 /*CORE-START*/
-const INTERNS = ['ALO','ASIM','CLEP','MAJ','AGR','MTS'];
+const INTERNS = ['ALO','ASIM','CLEP','MAJ','AGR','MTS','LBU','LOL','OLA'];
 const POSTS = [
   {id:'recM', name:'Réception', period:'Matin'},
   {id:'mac1', name:'Macro 1', period:'Matin'},
   {id:'mac2', name:'Macro 2', period:'Matin'},
-  {id:'foeto', name:'Fœto', period:'Matin', only:[0,2,4]},
+  {id:'mac3', name:'Macro 3', period:'Matin'},
+  {id:'foeto', name:'Fœto', period:'Matin'},
   {id:'recA', name:'Réception', period:'Après-midi'},
   {id:'sout', name:'Soutien', period:'Fin de journée'},
 ];
-const POST_LABEL = {recM:'réception matin',mac1:'Macro 1',mac2:'Macro 2',foeto:'Fœto',recA:'réception après-midi',sout:'soutien',sam:'samedi matin'};
-const MAIN_POSTS = ['recM','mac1','mac2','foeto','recA'];
-/* Exclusion temporaire : retirer un nom de cette liste le remet en Fœto. */
-const NO_FOETO = ['MAJ'];
-const canPost = (x,post) => !(post==='foeto' && NO_FOETO.includes(x));
+const POST_LABEL = {recM:'réception matin',mac1:'Macro 1',mac2:'Macro 2',mac3:'Macro 3',foeto:'Fœto',recA:'réception après-midi',sout:'soutien',sam:'samedi matin'};
+const MAIN_POSTS = ['recM','mac1','mac2','mac3','foeto','recA'];
+/* Jamais en Fœto. */
+const NO_FOETO = ['LBU','LOL','OLA'];
+/* Peuvent faire plusieurs Fœto dans la semaine. */
+const FOETO_NO_LIMIT = ['MAJ'];
+/* Équilibre et compteurs : seules les semaines à partir de ce lundi comptent. */
+const COUNT_START = '2026-11-30';
+/* Macro 3 : deux par semaine, à placer le lundi, le mercredi ou le vendredi, de préférence une pour ALO et une pour ASIM. */
+const MAC3_DAYS = [0,2,4], MAC3_PER_WEEK = 2, MAC3_FOR = ['ALO','ASIM'];
+
+/* Semaines particulières, repérées par la date de leur lundi.
+   foetoDays / mac3Days : jours concernés (0 = lundi … 4 = vendredi).
+   fixed : postes déjà attribués, placés par « Proposer ».
+   Ces deux semaines sont gardées pour l'historique. */
+const SPECIAL_WEEKS = {
+  '2026-11-16': {
+    note: "Fœto lundi pour AGR, mercredi et vendredi pour MAJ. Macro 3 le vendredi seulement, pour ASIM. LBU, LOL et OLA font chacun une macro (lundi, jeudi ou vendredi) et peuvent faire un soutien, jamais deux renforts le même jour.",
+    foetoDays: [0,2,4], foetoFor: 'MAJ',
+    mac3Days: [4],
+    fixed: {'2026-11-16':{foeto:'AGR'}, '2026-11-18':{foeto:'MAJ'}, '2026-11-20':{foeto:'MAJ',mac3:'ASIM'}},
+  },
+  '2026-11-23': {
+    note: "Fœto lundi et vendredi pour MAJ, mercredi pour MTS. LBU, LOL et OLA font une seule macro chacun, le mercredi, le jeudi ou le vendredi, jamais deux le même jour.",
+    foetoDays: [0,2,4], foetoFor: 'MAJ',
+    fixed: {'2026-11-23':{foeto:'MAJ'}, '2026-11-25':{foeto:'MTS'}, '2026-11-27':{foeto:'MAJ'}},
+  },
+};
+const EXTRAS = [...new Set(Object.values(SPECIAL_WEEKS).flatMap(w => w.extra || []))];
+const PEOPLE = [...INTERNS, ...EXTRAS];
+const SPECIAL_CACHE = {};
+const specialOf = date => date in SPECIAL_CACHE ? SPECIAL_CACHE[date] : (SPECIAL_CACHE[date] = SPECIAL_WEEKS[mondayOf(date)] || null);
+const teamOf = monday => [...INTERNS, ...((SPECIAL_WEEKS[monday] || {}).extra || [])];
+const extrasOf = monday => (SPECIAL_WEEKS[monday] || {}).extra || [];
+function dayHas(monday,i,post){
+  const sp = SPECIAL_WEEKS[monday];
+  if(post==='foeto') return (sp && sp.foetoDays ? sp.foetoDays : [0,2,4]).includes(i);
+  if(post==='mac3') return sp ? !!(sp.mac3Days && sp.mac3Days.includes(i)) : monday>=COUNT_START && MAC3_DAYS.includes(i);
+  return true;
+}
+const weekHasMac3 = monday => SPECIAL_WEEKS[monday] ? !!(SPECIAL_WEEKS[monday].mac3Days || []).length : monday>=COUNT_START;
+const foetoLimit = (x,monday) => FOETO_NO_LIMIT.includes(x) || (SPECIAL_WEEKS[monday] || {}).foetoFor===x ? 5 : 1;
+/* Nombre de Macro 3 à pourvoir : 2 parmi les jours ouverts (toutes pour une semaine particulière). */
+function mac3Need(wk,monday){
+  const open = slotsOf(wk,monday).filter(s => s.post==='mac3').length;
+  return SPECIAL_WEEKS[monday] ? open : Math.min(MAC3_PER_WEEK,open);
+}
+/* Cases à remplir : toutes les cases vides, sauf les Macro 3 au-delà des 2 prévues. */
+function emptySlots(wk,monday){
+  const slots = slotsOf(wk,monday);
+  const out = slots.filter(s => s.post!=='mac3' && !cellOf(wk,s.date,s.post));
+  const m3 = slots.filter(s => s.post==='mac3');
+  const lack = Math.max(0, mac3Need(wk,monday) - m3.filter(s => cellOf(wk,s.date,s.post)).length);
+  m3.filter(s => !cellOf(wk,s.date,s.post)).slice(0,lack).forEach(s => out.push(s));
+  return out;
+}
+function canPost(x,post,date){
+  const sp = date ? specialOf(date) : null;
+  if(EXTRAS.includes(x)){
+    if(!sp || !(sp.extra||[]).includes(x)) return false;
+    if(MAC_POSTS.includes(post)) return (sp.extraMacDays||[]).includes(weekday(date));
+    if(post==='sout') return (sp.extraSoutDays||[]).includes(weekday(date));
+    return false;
+  }
+  if(post==='foeto' && NO_FOETO.includes(x) && !(sp && sp.foetoFor===x)) return false;
+  return true;
+}
+const DAY_NAMES = ['lundi','mardi','mercredi','jeudi','vendredi'];
+const MAC_POSTS = ['mac1','mac2','mac3'];
+const extraRule = date => {
+  const sp = specialOf(date);
+  return sp ? 'une macro le ' + (sp.extraMacDays||[]).map(i => DAY_NAMES[i]).join(', ').replace(/, ([^,]*)$/,' ou $1') + ((sp.extraSoutDays||[]).length ? ', et un soutien' : '') : 'aucun poste';
+};
 /* Une indispo vaut true (journée), 'matin' ou 'aprem'. Le soutien compte comme un poste d'après-midi. */
-const POST_PART = {recM:'matin',mac1:'matin',mac2:'matin',foeto:'matin',sam:'matin',recA:'aprem',sout:'aprem'};
+const POST_PART = {recM:'matin',mac1:'matin',mac2:'matin',mac3:'matin',foeto:'matin',sam:'matin',recA:'aprem',sout:'aprem'};
 const PART_LABEL = {matin:'le matin',aprem:"l'après-midi"};
 function offFor(indispos,x,d,post){
   const v = indispos[x] && indispos[x][d];
@@ -396,7 +476,7 @@ function slotsOf(wk,monday){
   weekDates(monday).forEach((d,i) => {
     if(isClosed(wk,d)) return;
     if(i===5){ out.push({date:d,post:'sam'}); return; }
-    POSTS.forEach(p => { if(!p.only || p.only.includes(i)) out.push({date:d,post:p.id}); });
+    POSTS.forEach(p => { if(dayHas(monday,i,p.id)) out.push({date:d,post:p.id}); });
   });
   return out;
 }
@@ -417,19 +497,28 @@ function checkWeek(wk,monday,indispos){
       const v = indispos[a.who][a.date];
       issues.push({kind:'e',text:`${dayLabel(a.date)} : ${a.who} est indispo${v===true?'':' '+PART_LABEL[v]} mais posté sur ${POST_LABEL[a.post]}.`});
     }
-    if(!canPost(a.who,a.post)){
+    if(!canPost(a.who,a.post,a.date)){
       flag(bad,a);
-      issues.push({kind:'e',text:`${dayLabel(a.date)} : ${a.who} n'est pas en Fœto pour le moment.`});
+      issues.push({kind:'e',text: EXTRAS.includes(a.who)
+        ? `${dayLabel(a.date)} : ${a.who} ne peut faire qu'${extraRule(a.date)}.`
+        : `${dayLabel(a.date)} : ${a.who} n'est pas en Fœto pour le moment.`});
     }
   });
-  INTERNS.forEach(x => {
+  extrasOf(monday).forEach(x => {
+    const macs = list.filter(a => a.who===x && MAC_POSTS.includes(a.post));
+    if(macs.length>1){
+      macs.forEach(a => flag(bad,a));
+      issues.push({kind:'e',text:`${x} a ${macs.length} macros cette semaine. Maximum : une.`});
+    }
+  });
+  teamOf(monday).forEach(x => {
     const mine = list.filter(a => a.post==='sout' && a.who===x);
     if(mine.length>1){
       mine.forEach(a => flag(bad,a));
       issues.push({kind:'e',text:`${x} a ${mine.length} soutiens cette semaine (${mine.map(a=>dayLabel(a.date)).join(', ')}). Maximum : un par semaine.`});
     }
     const fo = list.filter(a => a.post==='foeto' && a.who===x);
-    if(fo.length>1){
+    if(fo.length>foetoLimit(x,monday)){
       fo.forEach(a => flag(bad,a));
       issues.push({kind:'e',text:`${x} a ${fo.length} Fœto cette semaine (${fo.map(a=>dayLabel(a.date)).join(', ')}). Maximum : un par semaine.`});
     }
@@ -437,7 +526,13 @@ function checkWeek(wk,monday,indispos){
   const dates = weekDates(monday);
   dates.slice(0,5).forEach(d => {
     const main = list.filter(a => a.date===d && a.post!=='sout');
-    INTERNS.forEach(x => {
+    const extrasToday = list.filter(a => a.date===d && EXTRAS.includes(a.who));
+    const extraNames = [...new Set(extrasToday.map(a => a.who))];
+    if((SPECIAL_WEEKS[monday]||{}).extraOnePerDay && extraNames.length>1){
+      extrasToday.forEach(a => flag(bad,a));
+      issues.push({kind:'e',text:`${dayLabel(d)} : ${extraNames.join(' et ')} sont le même jour. Un seul renfort par jour.`});
+    }
+    teamOf(monday).forEach(x => {
       const mine = main.filter(a => a.who===x);
       if(mine.length>1){
         mine.forEach(a => flag(bad,a));
@@ -458,11 +553,19 @@ function checkWeek(wk,monday,indispos){
     flag(warn,so); flag(warn,sa);
     issues.push({kind:'w',text:`Samedi : ${sa.who} fait aussi le soutien du vendredi. De préférence, la personne du samedi fait la réception du vendredi après-midi.`});
   }
-  return {issues,bad,warn,total:slots.length,filled:list.length,empty:slots.length-list.length};
+  const m3 = list.filter(a => a.post==='mac3');
+  const need = mac3Need(wk,monday);
+  if(!SPECIAL_WEEKS[monday] && m3.length>need){
+    m3.forEach(a => flag(warn,a));
+    issues.push({kind:'w',text:`${m3.length} Macro 3 cette semaine alors que ${need} sont prévues.`});
+  }
+  const total = slots.filter(s => s.post!=='mac3').length + need;
+  const empty = emptySlots(wk,monday).length;
+  return {issues,bad,warn,total,filled:total-empty,empty};
 }
 
 function blankLoad(){ return {recA:0,recM:0,mac:0,foeto:0,sout:0,sam:0,friRecA:0,friSout:0,all:0,allMain:0,w:{recA:0,recM:0,mac:0,foeto:0,sout:0,total:0,main:0}}; }
-const LOAD_KEY = {recA:'recA',recM:'recM',mac1:'mac',mac2:'mac',foeto:'foeto',sout:'sout',sam:'sam'};
+const LOAD_KEY = {recA:'recA',recM:'recM',mac1:'mac',mac2:'mac',mac3:'mac',foeto:'foeto',sout:'sout',sam:'sam'};
 function tally(L,post,thisWeek,date){
   const k = LOAD_KEY[post];
   L[k]++; L.all++;
@@ -479,8 +582,8 @@ function untally(L,post,date){
 function postCost(L,post,noise){
   const k = LOAD_KEY[post];
   const weight = {recA:14,sout:8,foeto:6,recM:5,mac:3}[k];
-  /* Le soutien est un petit poste en plus : il ne compte pas dans l'équilibre des postes de la semaine. */
-  return (post==='sout' ? 0 : L.w.main*12) + (L[k]+(L.w[k]||0))*weight + noise;
+  /* Les postes de la semaine sont équilibrés en comptant le soutien. */
+  return L.w.total*12 + (L[k]+(L.w[k]||0))*weight + noise;
 }
 
 /* Note d'équilibre d'une semaine complétée : plus elle est basse, plus la répartition est égale. */
@@ -494,11 +597,11 @@ function balanceScore(load){
   return 100*spread(col(L => L.recA)) + 40*spread(col(L => L.w.recA))
     + 30*spread(col(L => L.sout)) + 30*spread(col(L => L.friSout)) + 20*spread(col(L => L.friRecA))
     + 20*spread(col(L => L.foeto,foetoTeam)) + 20*spread(col(L => L.recM)) + 12*spread(col(L => L.mac))
-    + 15*spread(col(L => L.allMain)) + 2000*spread(col(L => L.w.main));
+    + 15*spread(col(L => L.all)) + 2000*spread(col(L => L.w.total));
 }
 
 /* Si l'effectif manque, la réception reste couverte en priorité. Macro 2 reste vide en premier. */
-const MISS = {recM:3000,recA:3000,sout:2500,sam:2500,foeto:2000,mac1:1500,mac2:1000};
+const MISS = {recM:3000,recA:3000,sout:2500,sam:2500,foeto:2000,mac1:1500,mac2:1000,mac3:1000};
 
 /* Un essai de remplissage, jour par jour, dans un ordre tiré au sort. */
 function fillOnce(work,monday,off,load,rng,amp){
@@ -517,17 +620,37 @@ function fillOnce(work,monday,off,load,rng,amp){
   if(sp && friOpen && !cellOf(work,fri,'recA') && !off(sp,fri,'recA') && cellOf(work,fri,'sout')!==sp
      && !MAIN_POSTS.some(p => cellOf(work,fri,p)===sp)) put(fri,'recA',sp);
 
+  /* Macro 3 : on choisit les jours, avec ALO et ASIM en priorité. */
+  const shuffle = a => { for(let k=a.length-1;k>0;k--){ const j = Math.floor(rng()*(k+1)); [a[k],a[j]] = [a[j],a[k]]; } return a; };
+  const m3Days = [0,1,2,3,4].filter(i => dayHas(monday,i,'mac3') && !isClosed(work,dates[i]));
+  const mac3Use = new Set(m3Days.filter(i => cellOf(work,dates[i],'mac3')));
+  if(SPECIAL_WEEKS[monday]) m3Days.forEach(i => mac3Use.add(i));
+  else{
+    const need = mac3Need(work,monday);
+    shuffle([...MAC3_FOR]).forEach(who => {
+      if(mac3Use.size>=need || !load[who]) return;
+      if(m3Days.some(i => cellOf(work,dates[i],'mac3')===who)) return;
+      const opts = m3Days.filter(i => !mac3Use.has(i) && !off(who,dates[i],'mac3') && !MAIN_POSTS.some(p => cellOf(work,dates[i],p)===who));
+      if(!opts.length) return;
+      const i = opts[Math.floor(rng()*opts.length)];
+      put(dates[i],'mac3',who); mac3Use.add(i);
+    });
+    shuffle(m3Days.filter(i => !mac3Use.has(i))).forEach(i => { if(mac3Use.size<need) mac3Use.add(i); });
+  }
+
   const order = [0,1,2,3,4];
   for(let i=4;i>0;i--){ const j = Math.floor(rng()*(i+1)); [order[i],order[j]] = [order[j],order[i]]; }
   order.forEach(i => {
     const d = dates[i];
     if(isClosed(work,d)) return;
-    const main = POSTS.filter(p => (!p.only||p.only.includes(i)) && p.id!=='sout').map(p => p.id);
+    const main = POSTS.filter(p => dayHas(monday,i,p.id) && p.id!=='sout' && (p.id!=='mac3' || mac3Use.has(i))).map(p => p.id);
+    const team = teamOf(monday);
+    const spw = SPECIAL_WEEKS[monday];
     const free = main.filter(p => !cellOf(work,d,p));
     const used = new Set(main.map(p => cellOf(work,d,p)).filter(Boolean));
     const raFixed = cellOf(work,d,'recA'), soFixed = cellOf(work,d,'sout');
     const noise = {};
-    INTERNS.forEach(x => { noise[x] = {}; POSTS.forEach(p => { noise[x][p.id] = rng()*amp; }); });
+    team.forEach(x => { noise[x] = {}; POSTS.forEach(p => { noise[x][p.id] = rng()*amp; }); });
     const costOf = (x,p) => postCost(load[x],p,noise[x][p])
       + (i===4 && p==='sout' ? load[x].friSout*8 + (x===sp ? 400 : 0) : 0)
       + (i===4 && p==='recA' ? load[x].friRecA*8 : 0);
@@ -539,22 +662,29 @@ function fillOnce(work,monday,off,load,rng,amp){
         const ra = pickNow.recA || raFixed;
         if(soFixed){ best = {cost,pick:{...pickNow}}; return; }
         let any = false;
-        INTERNS.forEach(x => {
-          if(x===ra || !soutienFree(x) || off(x,d,'sout')) return;
+        team.forEach(x => {
+          if(x===ra || !soutienFree(x) || off(x,d,'sout') || !canPost(x,'sout',d)) return;
+          if(EXTRAS.includes(x) && (spw||{}).extraOnePerDay && [...used].some(y => EXTRAS.includes(y) && y!==x)) return;
           any = true;
-          const c = cost+costOf(x,'sout');
+          /* Le soutien va de préférence à quelqu'un qui n'est pas posté le matin. */
+          const c = cost+costOf(x,'sout') + (used.has(x) ? 300 : 0);
           if(c<best.cost) best = {cost:c,pick:{...pickNow,sout:x}};
         });
         if(!any && cost+MISS.sout<best.cost) best = {cost:cost+MISS.sout,pick:{...pickNow}};
         return;
       }
       const p = free[k];
-      INTERNS.forEach(x => {
-        if(used.has(x) || !canPost(x,p) || off(x,d,p)) return;
-        if(p==='foeto' && load[x].w.foeto>0) return;
-        if(p==='recA' && x===soFixed) return;
+      /* Seuls les 5 candidats les moins chargés pour ce poste sont explorés : le calcul reste rapide à 9 internes. */
+      team.filter(x => {
+        if(used.has(x) || !canPost(x,p,d) || off(x,d,p)) return false;
+        if(p==='foeto' && load[x].w.foeto>=foetoLimit(x,monday)) return false;
+        if(EXTRAS.includes(x) && load[x].w.mac>=1) return false;
+        if(EXTRAS.includes(x) && (spw||{}).extraOnePerDay && [...used,soFixed].some(y => EXTRAS.includes(y) && y!==x)) return false;
+        if(p==='recA' && x===soFixed) return false;
+        return true;
+      }).map(x => [x,costOf(x,p)]).sort((a,b) => a[1]-b[1]).slice(0,5).forEach(([x,c]) => {
         used.add(x); pickNow[p] = x;
-        walk(k+1,cost+costOf(x,p));
+        walk(k+1,cost+c);
         used.delete(x); delete pickNow[p];
       });
       walk(k+1,cost+MISS[p]);
@@ -573,16 +703,21 @@ function repair(work,monday,off,load,patch){
     weekDates(monday).slice(0,5).forEach((d,i) => {
       if(isClosed(work,d) || !patch[d]) return;
       const busy = new Set(MAIN_POSTS.map(p => cellOf(work,d,p)).filter(Boolean));
-      MAIN_POSTS.forEach(p => {
+      [...MAIN_POSTS,'sout'].forEach(p => {
         const x = patch[d][p];
         if(!x || x==='' || (i===4 && p==='recA' && x===sp)) return;
-        const y = INTERNS.filter(y => !busy.has(y) && load[x].w.main-load[y].w.main>=2 && canPost(y,p) && !off(y,d,p)
-            && !(p==='foeto' && load[y].w.foeto>0) && !(p==='recA' && cellOf(work,d,'sout')===y))
-          .sort((a,b) => load[a].w.main-load[b].w.main)[0];
+        if(!load[x] || EXTRAS.includes(x)) return;
+        if(p==='mac3' && MAC3_FOR.includes(x)) return;
+        const so = cellOf(work,d,'sout');
+        const y = INTERNS.filter(y => !busy.has(y) && load[x].w.total-load[y].w.total>=2 && canPost(y,p,d) && !off(y,d,p)
+            && !(p==='foeto' && load[y].w.foeto>=foetoLimit(y,monday))
+            && (p==='sout' ? load[y].w.sout===0 && !(i===4 && y===sp) : so!==y))
+          .sort((a,b) => load[a].w.total-load[b].w.total)[0];
         if(!y) return;
         work.days[d][p] = y; patch[d][p] = y;
         untally(load[x],p,d); tally(load[y],p,true,d);
-        busy.delete(x); busy.add(y); moved = true;
+        if(p!=='sout'){ busy.delete(x); busy.add(y); }
+        moved = true;
       });
     });
     if(!moved) break;
@@ -595,31 +730,48 @@ function propose(week,monday,indispos,allWeeks,rng=Math.random,tries=200){
   const start = JSON.parse(JSON.stringify(week||{}));
   start.days = start.days || {};
   const off = (x,d,post) => offFor(indispos,x,d,post);
-  const load0 = Object.fromEntries(INTERNS.map(x => [x,blankLoad()]));
-  Object.keys(allWeeks).forEach(id => {
-    if(id===monday) return;
-    assignments(allWeeks[id],id).forEach(a => tally(load0[a.who],a.post,false,a.date));
+  /* Postes déjà prévus pour une semaine particulière : placés seulement dans les cases vides,
+     et pas si la personne est indispo (la case est alors remplie comme les autres). */
+  const fixedPatch = {};
+  const sp = SPECIAL_WEEKS[monday];
+  if(sp && sp.fixed) Object.entries(sp.fixed).forEach(([d,o]) => {
+    if(isClosed(start,d)) return;
+    Object.entries(o).forEach(([p,x]) => {
+      if(cellOf(start,d,p) || off(x,d,p)) return;
+      (start.days[d] = start.days[d] || {})[p] = x;
+      (fixedPatch[d] = fixedPatch[d] || {})[p] = x;
+    });
   });
-  assignments(start,monday).forEach(a => tally(load0[a.who],a.post,true,a.date));
+  const load0 = Object.fromEntries(teamOf(monday).map(x => [x,blankLoad()]));
+  Object.keys(allWeeks).forEach(id => {
+    if(id===monday || id<COUNT_START) return;
+    assignments(allWeeks[id],id).forEach(a => { if(load0[a.who]) tally(load0[a.who],a.post,false,a.date); });
+  });
+  assignments(start,monday).forEach(a => { if(load0[a.who]) tally(load0[a.who],a.post,true,a.date); });
   let best = null;
   for(let t=0;t<tries;t++){
     const work = JSON.parse(JSON.stringify(start));
     const load = JSON.parse(JSON.stringify(load0));
     const patch = fillOnce(work,monday,off,load,rng,1+(t%5)*1.5);
     repair(work,monday,off,load,patch);
-    const missing = slotsOf(work,monday).filter(s => !cellOf(work,s.date,s.post)).reduce((n,s) => n+MISS[s.post],0);
-    const score = missing*100 + balanceScore(load);
+    const missing = emptySlots(work,monday).reduce((n,s) => n+MISS[s.post],0);
+    const idleExtras = extrasOf(monday).filter(x => load[x].w.mac===0).length;
+    const score = missing*100 + idleExtras*50000 + balanceScore(load);
     if(!best || score<best.score) best = {score,patch};
   }
-  return best.patch;
+  const out = JSON.parse(JSON.stringify(fixedPatch));
+  Object.entries(best.patch).forEach(([d,o]) => { out[d] = {...(out[d]||{}),...o}; });
+  return out;
 }
 
 /* Compteur : réceptions et soutiens, avec la part du vendredi. */
 function countAll(weeks){
   const out = Object.fromEntries(INTERNS.map(x => [x,{recA:0,recAFri:0,sout:0,soutFri:0,sam:0,foeto:0}]));
   Object.keys(weeks).forEach(id => {
+    if(id<COUNT_START) return;
     assignments(weeks[id],id).forEach(a => {
       const r = out[a.who], fri = weekday(a.date)===4;
+      if(!r) return;
       if(a.post==='recA'){ r.recA++; if(fri) r.recAFri++; }
       if(a.post==='sout'){ r.sout++; if(fri) r.soutFri++; }
       if(a.post==='sam') r.sam++;
@@ -629,11 +781,12 @@ function countAll(weeks){
   return out;
 }
 /* Postes de chaque interne sur une semaine. */
-const STAT_ROWS = [['Réception matin',['recM']],['Macro',['mac1','mac2']],['Fœto',['foeto']],['Réception après-midi',['recA']],['Soutien',['sout']],['Samedi',['sam']]];
+const STAT_ROWS = [['Réception matin',['recM']],['Macro',['mac1','mac2','mac3']],['Fœto',['foeto']],['Réception après-midi',['recA']],['Soutien',['sout']],['Samedi',['sam']]];
 function weekStats(wk,monday){
-  const out = Object.fromEntries(INTERNS.map(x => [x,{total:0,main:0}]));
+  const out = Object.fromEntries(teamOf(monday).map(x => [x,{total:0,main:0}]));
   assignments(wk,monday).forEach(a => {
     const r = out[a.who];
+    if(!r) return;
     r[a.post] = (r[a.post]||0)+1;
     r.total++;
     if(a.post!=='sout') r.main++;
@@ -668,7 +821,7 @@ function cleanWeek(id,raw){
     days[d] = {};
     [...MAIN_POSTS,'sout','sam'].forEach(p => {
       const v = rd[d] && rd[d][p];
-      if(INTERNS.includes(v)) days[d][p] = v;
+      if(PEOPLE.includes(v)) days[d][p] = v;
     });
   });
   const rc = (raw && raw.closed) || {};
@@ -817,13 +970,17 @@ function relLabel(id){
 function optionsFor(wk,date,post,value,friSout){
   const day = (wk.days && wk.days[date]) || {};
   const opts = [`<option value=""${value?'':' selected'}>—</option>`];
-  INTERNS.forEach(x => {
+  const monday = mondayOf(date);
+  const macElsewhere = x => slotsOf(wk,monday).some(s => MAC_POSTS.includes(s.post) && !(s.date===date && s.post===post) && cellOf(wk,s.date,s.post)===x);
+  teamOf(monday).forEach(x => {
     let note = '';
     if(x!==value){
       const otherSout = post==='sout' && weekDates(mondayOf(date)).slice(0,5).some(d => d!==date && !isClosed(wk,d) && cellOf(wk,d,'sout')===x);
       if(offFor(state.indispos,x,date,post)) note = 'indispo';
-      else if(!canPost(x,post)) note = 'pas de Fœto';
-      else if(post==='foeto' && weekDates(mondayOf(date)).slice(0,5).some(d => d!==date && !isClosed(wk,d) && cellOf(wk,d,'foeto')===x)) note = 'déjà un Fœto cette semaine';
+      else if(!canPost(x,post,date)) note = EXTRAS.includes(x) ? extraRule(date) : 'pas de Fœto';
+      else if(EXTRAS.includes(x) && MAC_POSTS.includes(post) && macElsewhere(x)) note = 'a déjà sa macro de la semaine';
+      else if(EXTRAS.includes(x) && (specialOf(date)||{}).extraOnePerDay && [...MAIN_POSTS,'sout'].some(p => p!==post && EXTRAS.includes(day[p]) && day[p]!==x)) note = 'un autre renfort ce jour-là';
+      else if(post==='foeto' && weekDates(monday).slice(0,5).filter(d => d!==date && !isClosed(wk,d) && cellOf(wk,d,'foeto')===x).length>=foetoLimit(x,monday)) note = 'déjà un Fœto cette semaine';
       else if(post==='sout'){
         if(otherSout) note = 'déjà un soutien cette semaine';
         else if(day.recA===x) note = 'en réception après-midi';
@@ -842,7 +999,11 @@ function optionsFor(wk,date,post,value,friSout){
 function pickHtml(w,wk,date,post,chk,friSout){
   const v = cellOf(wk,date,post);
   const key = date+'|'+post;
-  const cls = chk.bad.has(key) ? ' bad' : chk.warn.has(key) ? ' warn' : '';
+  let cls = chk.bad.has(key) ? ' bad' : chk.warn.has(key) ? ' warn' : '';
+  /* Macro 3 en trop : les 2 de la semaine sont déjà placées, cette case peut rester vide. */
+  const spare = post==='mac3' && !v && !SPECIAL_WEEKS[w]
+    && slotsOf(wk,w).filter(s => s.post==='mac3' && cellOf(wk,s.date,s.post)).length >= mac3Need(wk,w);
+  if(spare) cls += ' spare';
   const style = v ? ` style="--c:var(--${v})"` : '';
   const on = v && v===state.hl ? ' on' : '';
   return `<div class="cell${cls}"><select class="pick${v?'':' empty'}${on}" id="c-${date}-${post}" data-w="${w}" data-d="${date}" data-p="${post}" data-i="${v}"${style} aria-label="${POST_LABEL[post]}, ${dayLabel(date)}"${wkLocked(wk)?' disabled':''}>${optionsFor(wk,date,post,v,friSout)}</select></div>`;
@@ -886,11 +1047,12 @@ function satBarHtml(id,wk,dates,chk,lock,sams){
 }
 function statsHtml(wk,id){
   const st = weekStats(wk,id);
-  const head = INTERNS.map(x => `<th scope="col"><span class="code" style="--c:var(--${x})">${x}</span></th>`).join('');
+  const team = teamOf(id);
+  const head = team.map(x => `<th scope="col"><span class="code" style="--c:var(--${x})">${x}</span></th>`).join('');
   const cell = v => `<td${v?'':' class="zero"'}>${v||'·'}</td>`;
-  const rows = STAT_ROWS.map(([label,posts]) => `<tr><th scope="row">${label}</th>${INTERNS.map(x => cell(posts.reduce((n,p) => n+(st[x][p]||0),0))).join('')}</tr>`).join('');
-  const total = `<tr class="total"><th scope="row">Total sans soutien</th>${INTERNS.map(x => `<td>${st[x].main}</td>`).join('')}</tr>`
-    + `<tr class="total2"><th scope="row">Total avec soutien</th>${INTERNS.map(x => `<td>${st[x].total}</td>`).join('')}</tr>`;
+  const rows = STAT_ROWS.map(([label,posts]) => `<tr><th scope="row">${label}</th>${team.map(x => cell(posts.reduce((n,p) => n+(st[x][p]||0),0))).join('')}</tr>`).join('');
+  const total = `<tr class="total"><th scope="row">Total avec soutien</th>${team.map(x => `<td>${st[x].total}</td>`).join('')}</tr>`
+    + `<tr class="total2"><th scope="row">Total sans soutien</th>${team.map(x => `<td>${st[x].main}</td>`).join('')}</tr>`;
   return `<div class="wstats-wrap"><h3>Postes de la semaine par interne</h3><div class="wstats-scroll"><table class="wstats">
     <thead><tr><th scope="col"><span class="visually-hidden">Poste</span></th>${head}</tr></thead><tbody>${rows}${total}</tbody></table></div></div>`;
 }
@@ -913,14 +1075,16 @@ function weekHtml(id,sams){
 
   let body = '';
   if(isOpen){
-    const rows = POSTS.map((p,r) => {
+    const rowPosts = POSTS.filter(p => p.id!=='mac3' || weekHasMac3(id));
+    const rows = rowPosts.map((p,r) => {
       const cells = days5.map((d,i) => {
-        if(isClosed(wk,d)) return r===0 ? `<td rowspan="${POSTS.length}" class="closed"><span>${holidayName(d)||'Fermé'}</span></td>` : '';
-        if(p.only && !p.only.includes(i)) return `<td class="no-post" aria-label="Pas de poste"></td>`;
+        if(isClosed(wk,d)) return r===0 ? `<td rowspan="${rowPosts.length}" class="closed"><span>${holidayName(d)||'Fermé'}</span></td>` : '';
+        if(!dayHas(id,i,p.id)) return `<td class="no-post" aria-label="Pas de poste"></td>`;
         return `<td>${pickHtml(id,wk,d,p.id,chk,'')}</td>`;
       }).join('');
       const brk = p.id==='recA' ? ' class="break"' : '';
-      return `<tr${brk}><th scope="row">${p.name}<small>${p.period}</small></th>${cells}</tr>`;
+      const period = p.id==='mac3' && !SPECIAL_WEEKS[id] ? `Matin · ${MAC3_PER_WEEK} par semaine` : p.period;
+      return `<tr${brk}><th scope="row">${p.name}<small>${period}</small></th>${cells}</tr>`;
     }).join('');
     const offRow = days5.map(d => {
       const who = INTERNS.filter(x => state.indispos[x] && state.indispos[x][d]).map(x => {
@@ -930,7 +1094,9 @@ function weekHtml(id,sams){
       return `<td>${who.join('')}</td>`;
     }).join('');
     const issues = chk.issues.length ? `<ul class="issues">${chk.issues.map(x => `<li class="${x.kind}"><b>${x.kind==='e'?'Conflit':'À vérifier'}</b><span>${x.text}</span></li>`).join('')}</ul>` : '';
-    body = satBarHtml(id,wk,dates,chk,lock,sams) + `<div class="grid-scroll"><table class="grid">
+    const spw = SPECIAL_WEEKS[id];
+    const note = spw ? `<div class="special-note"><b>Semaine particulière</b><span>${spw.note} « Proposer » place tout ça dans les cases vides.</span></div>` : '';
+    body = note + satBarHtml(id,wk,dates,chk,lock,sams) + `<div class="grid-scroll"><table class="grid">
       <colgroup><col class="post-col">${days5.map(() => '<col>').join('')}</colgroup>
       <thead><tr><th class="corner" scope="col">Poste</th>${days5.map(d => headCell(id,wk,d)).join('')}</tr></thead>
       <tbody>${rows}<tr class="offrow"><th scope="row">Indispos</th>${offRow}</tr></tbody>
@@ -1064,7 +1230,7 @@ function toast(msg){
 }
 
 /* ---------- Événements ---------- */
-$('legend').innerHTML = INTERNS.map(x => `<button class="code" style="--c:var(--${x})" data-act="hl" data-i="${x}" aria-pressed="false">${x}</button>`).join('')+'<small>Clique sur un interne pour surligner ses postes.</small>';
+$('legend').innerHTML = PEOPLE.map(x => `<button class="code" style="--c:var(--${x})" data-act="hl" data-i="${x}" aria-pressed="false">${x}</button>`).join('')+'<small>Clique sur un interne pour surligner ses postes.</small>';
 
 document.addEventListener('change',e => {
   const t = e.target;
@@ -1085,7 +1251,7 @@ document.addEventListener('click',e => {
   }
   else if(act==='off-mode'){ state.offMode = b.dataset.m; render(); }
   else if(act==='off') toggleOff(i,d);
-  else if(act==='propose') runPropose(w);
+  else if(act==='propose'){ toast('Calcul de la proposition…'); setTimeout(() => runPropose(w),40); }
   else if(act==='sat') setSat(w,i);
   else if(act==='freeze') freeze(w);
   else if(act==='unfreeze') unfreeze(w);
