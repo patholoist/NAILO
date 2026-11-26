@@ -294,7 +294,7 @@ details.rules ul{margin:10px 0 2px;padding-left:18px;display:flex;flex-direction
         <li>L'interne de réception de l'après-midi ne peut pas faire le soutien le même jour.</li>
         <li>Le soutien va de préférence à quelqu'un qui n'a pas de poste le matin, sauf si ce n'est pas possible.</li>
         <li>Chaque interne fait au plus un soutien par semaine.</li>
-        <li>Chaque interne fait au plus un Fœto par semaine, sauf MAJ.</li>
+        <li>Fœto : MAJ fait obligatoirement 2 des 3 Fœto de chaque semaine, sauf s'il est indispo. Les autres internes en font au plus un.</li>
         <li>Le Fœto a lieu le lundi, le mercredi et le vendredi. LBU, LOL et OLA ne sont jamais en Fœto.</li>
         <li>Macro 3 : deux par semaine, le lundi, le mercredi ou le vendredi. Une pour ALO et une pour ASIM quand c'est possible. Les règles habituelles des macros s'appliquent.</li>
         <li>Le samedi matin se choisit à la main, au-dessus de chaque semaine. « Proposer » met de préférence cette personne en réception le vendredi après-midi, plutôt qu'au soutien.</li>
@@ -354,6 +354,8 @@ const MAIN_POSTS = ['recM','mac1','mac2','mac3','foeto','recA'];
 const NO_FOETO = ['LBU','LOL','OLA'];
 /* Peuvent faire plusieurs Fœto dans la semaine. */
 const FOETO_NO_LIMIT = ['MAJ'];
+/* MAJ fait obligatoirement 2 des 3 Fœto de la semaine (sauf indispo). */
+const FOETO_MAIN = 'MAJ', FOETO_MAIN_PER_WEEK = 2;
 /* Équilibre et compteurs : seules les semaines à partir de ce lundi comptent. */
 const COUNT_START = '2026-11-30';
 /* Macro 3 : deux par semaine, à placer le lundi, le mercredi ou le vendredi, de préférence une pour ALO et une pour ASIM. */
@@ -553,6 +555,21 @@ function checkWeek(wk,monday,indispos){
     flag(warn,so); flag(warn,sa);
     issues.push({kind:'w',text:`Samedi : ${sa.who} fait aussi le soutien du vendredi. De préférence, la personne du samedi fait la réception du vendredi après-midi.`});
   }
+  if(!SPECIAL_WEEKS[monday] && monday>=COUNT_START){
+    const foSlots = slots.filter(s => s.post==='foeto');
+    const mine = list.filter(a => a.post==='foeto' && a.who===FOETO_MAIN);
+    const can = foSlots.filter(s => !offFor(indispos,FOETO_MAIN,s.date,'foeto')).length;
+    const want = Math.min(FOETO_MAIN_PER_WEEK,can);
+    const allFilled = foSlots.every(s => cellOf(wk,s.date,s.post));
+    if(allFilled && mine.length<want){
+      list.filter(a => a.post==='foeto').forEach(a => flag(bad,a));
+      issues.push({kind:'e',text:`${FOETO_MAIN} doit faire ${want} Fœto sur ${foSlots.length} cette semaine (actuellement ${mine.length}).`});
+    }
+    if(mine.length>FOETO_MAIN_PER_WEEK){
+      mine.forEach(a => flag(warn,a));
+      issues.push({kind:'w',text:`${FOETO_MAIN} fait ${mine.length} Fœto alors que ${FOETO_MAIN_PER_WEEK} sont prévus.`});
+    }
+  }
   const m3 = list.filter(a => a.post==='mac3');
   const need = mac3Need(wk,monday);
   if(!SPECIAL_WEEKS[monday] && m3.length>need){
@@ -593,7 +610,7 @@ const spread = v => {
 };
 function balanceScore(load){
   const col = (f,who=INTERNS) => who.map(x => f(load[x]));
-  const foetoTeam = INTERNS.filter(x => canPost(x,'foeto'));
+  const foetoTeam = INTERNS.filter(x => canPost(x,'foeto') && !FOETO_NO_LIMIT.includes(x));
   return 100*spread(col(L => L.recA)) + 40*spread(col(L => L.w.recA))
     + 30*spread(col(L => L.sout)) + 30*spread(col(L => L.friSout)) + 20*spread(col(L => L.friRecA))
     + 20*spread(col(L => L.foeto,foetoTeam)) + 20*spread(col(L => L.recM)) + 12*spread(col(L => L.mac))
@@ -615,13 +632,25 @@ function fillOnce(work,monday,off,load,rng,amp){
   const dates = weekDates(monday), fri = dates[4], sat = dates[5];
   const friOpen = !isClosed(work,fri), satOpen = !isClosed(work,sat);
 
+  const shuffle = a => { for(let k=a.length-1;k>0;k--){ const j = Math.floor(rng()*(k+1)); [a[k],a[j]] = [a[j],a[k]]; } return a; };
+
+  /* Fœto : 2 des 3 pour MAJ, sur des jours où il est disponible. Placé en premier : c'est une règle obligatoire. */
+  if(!SPECIAL_WEEKS[monday] && monday>=COUNT_START && load[FOETO_MAIN]){
+    const foDays = [0,1,2,3,4].filter(i => dayHas(monday,i,'foeto') && !isClosed(work,dates[i]));
+    let has = foDays.filter(i => cellOf(work,dates[i],'foeto')===FOETO_MAIN).length;
+    shuffle(foDays.filter(i => !cellOf(work,dates[i],'foeto') && !off(FOETO_MAIN,dates[i],'foeto')
+      && !MAIN_POSTS.some(p => cellOf(work,dates[i],p)===FOETO_MAIN))).forEach(i => {
+      if(has>=FOETO_MAIN_PER_WEEK) return;
+      put(dates[i],'foeto',FOETO_MAIN); has++;
+    });
+  }
+
   /* Le samedi est choisi à la main. Sa personne passe de préférence en réception le vendredi après-midi. */
   const sp = satOpen ? cellOf(work,sat,'sam') : '';
   if(sp && friOpen && !cellOf(work,fri,'recA') && !off(sp,fri,'recA') && cellOf(work,fri,'sout')!==sp
      && !MAIN_POSTS.some(p => cellOf(work,fri,p)===sp)) put(fri,'recA',sp);
 
   /* Macro 3 : on choisit les jours, avec ALO et ASIM en priorité. */
-  const shuffle = a => { for(let k=a.length-1;k>0;k--){ const j = Math.floor(rng()*(k+1)); [a[k],a[j]] = [a[j],a[k]]; } return a; };
   const m3Days = [0,1,2,3,4].filter(i => dayHas(monday,i,'mac3') && !isClosed(work,dates[i]));
   const mac3Use = new Set(m3Days.filter(i => cellOf(work,dates[i],'mac3')));
   if(SPECIAL_WEEKS[monday]) m3Days.forEach(i => mac3Use.add(i));
@@ -678,6 +707,7 @@ function fillOnce(work,monday,off,load,rng,amp){
       team.filter(x => {
         if(used.has(x) || !canPost(x,p,d) || off(x,d,p)) return false;
         if(p==='foeto' && load[x].w.foeto>=foetoLimit(x,monday)) return false;
+        if(p==='foeto' && x===FOETO_MAIN && !SPECIAL_WEEKS[monday] && monday>=COUNT_START && load[x].w.foeto>=FOETO_MAIN_PER_WEEK) return false;
         if(EXTRAS.includes(x) && load[x].w.mac>=1) return false;
         if(EXTRAS.includes(x) && (spw||{}).extraOnePerDay && [...used,soFixed].some(y => EXTRAS.includes(y) && y!==x)) return false;
         if(p==='recA' && x===soFixed) return false;
@@ -708,6 +738,7 @@ function repair(work,monday,off,load,patch){
         if(!x || x==='' || (i===4 && p==='recA' && x===sp)) return;
         if(!load[x] || EXTRAS.includes(x)) return;
         if(p==='mac3' && MAC3_FOR.includes(x)) return;
+        if(p==='foeto' && x===FOETO_MAIN) return;
         const so = cellOf(work,d,'sout');
         const y = INTERNS.filter(y => !busy.has(y) && load[x].w.total-load[y].w.total>=2 && canPost(y,p,d) && !off(y,d,p)
             && !(p==='foeto' && load[y].w.foeto>=foetoLimit(y,monday))
