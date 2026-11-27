@@ -300,7 +300,7 @@ details.rules ul{margin:10px 0 2px;padding-left:18px;display:flex;flex-direction
         <li>Le samedi matin se choisit à la main, au-dessus de chaque semaine. « Proposer » met de préférence cette personne en réception le vendredi après-midi, plutôt qu'au soutien.</li>
         <li>Une indispo peut porter sur la journée, le matin ou l'après-midi. Le matin : pas de réception du matin, de macro, de Fœto ni de samedi matin. L'après-midi : pas de réception de l'après-midi ni de soutien.</li>
         <li>Un interne indispo n'est jamais proposé. S'il est posté à la main, la case passe en conflit.</li>
-        <li>Les postes de la semaine sont répartis à égalité en comptant le soutien.</li>
+        <li>Les postes de la semaine sont répartis à égalité en comptant le soutien, mais pas le samedi. Le samedi se répartit à part, avec le compteur affiché à côté de chaque nom.</li>
         <li>Sur le semestre, « Proposer » équilibre en priorité les réceptions de l'après-midi, puis les soutiens, les réceptions et soutiens du vendredi, le Fœto, la réception du matin et les macros. L'équilibre et les totaux comptent à partir de la semaine du 30 novembre 2026.</li>
         <li>« Proposer » ne remplit que les cases vides. Il ne touche jamais à ce que tu as saisi.</li>
         <li>« Figer » verrouille une semaine. « Défiger » demande une confirmation.</li>
@@ -588,11 +588,12 @@ function tally(L,post,thisWeek,date){
   L[k]++; L.all++;
   if(post!=='sout'){ L.allMain++; if(thisWeek) L.w.main++; }
   if(date && weekday(date)===4){ if(post==='recA') L.friRecA++; if(post==='sout') L.friSout++; }
-  if(thisWeek){ L.w.total++; if(k in L.w) L.w[k]++; }
+  /* Le total de la semaine ne compte pas le samedi. */
+  if(thisWeek){ if(post!=='sam') L.w.total++; if(k in L.w) L.w[k]++; }
 }
 function untally(L,post,date){
   const k = LOAD_KEY[post];
-  L[k]--; L.all--; L.w.total--; if(k in L.w) L.w[k]--;
+  L[k]--; L.all--; if(post!=='sam') L.w.total--; if(k in L.w) L.w[k]--;
   if(post!=='sout'){ L.allMain--; L.w.main--; }
   if(date && weekday(date)===4){ if(post==='recA') L.friRecA--; if(post==='sout') L.friSout--; }
 }
@@ -614,7 +615,7 @@ function balanceScore(load){
   return 100*spread(col(L => L.recA)) + 40*spread(col(L => L.w.recA))
     + 30*spread(col(L => L.sout)) + 30*spread(col(L => L.friSout)) + 20*spread(col(L => L.friRecA))
     + 20*spread(col(L => L.foeto,foetoTeam)) + 20*spread(col(L => L.recM)) + 12*spread(col(L => L.mac))
-    + 15*spread(col(L => L.all)) + 2000*spread(col(L => L.w.total));
+    + 15*spread(col(L => L.all-L.sam)) + 2000*spread(col(L => L.w.total));
 }
 
 /* Si l'effectif manque, la réception reste couverte en priorité. Macro 2 reste vide en premier. */
@@ -819,6 +820,7 @@ function weekStats(wk,monday){
     const r = out[a.who];
     if(!r) return;
     r[a.post] = (r[a.post]||0)+1;
+    if(a.post==='sam') return;
     r.total++;
     if(a.post!=='sout') r.main++;
   });
@@ -1082,8 +1084,8 @@ function statsHtml(wk,id){
   const head = team.map(x => `<th scope="col"><span class="code" style="--c:var(--${x})">${x}</span></th>`).join('');
   const cell = v => `<td${v?'':' class="zero"'}>${v||'·'}</td>`;
   const rows = STAT_ROWS.map(([label,posts]) => `<tr><th scope="row">${label}</th>${team.map(x => cell(posts.reduce((n,p) => n+(st[x][p]||0),0))).join('')}</tr>`).join('');
-  const total = `<tr class="total"><th scope="row">Total avec soutien</th>${team.map(x => `<td>${st[x].total}</td>`).join('')}</tr>`
-    + `<tr class="total2"><th scope="row">Total sans soutien</th>${team.map(x => `<td>${st[x].main}</td>`).join('')}</tr>`;
+  const total = `<tr class="total"><th scope="row">Total sans soutien, hors samedi</th>${team.map(x => `<td>${st[x].main}</td>`).join('')}</tr>`
+    + `<tr class="total2"><th scope="row">Total avec soutien, hors samedi</th>${team.map(x => `<td>${st[x].total}</td>`).join('')}</tr>`;
   return `<div class="wstats-wrap"><h3>Postes de la semaine par interne</h3><div class="wstats-scroll"><table class="wstats">
     <thead><tr><th scope="col"><span class="visually-hidden">Poste</span></th>${head}</tr></thead><tbody>${rows}${total}</tbody></table></div></div>`;
 }
